@@ -10,34 +10,56 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.file;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * Handler to allow tracing to and from arbitrary files in the file system.
  */
-public class IFileHandler implements ArtifactHandler {
+public class IFileHandler extends AbstractArtifactHandler {
 
 	@Override
-	public boolean canHandleSelection(Object selection) {
-		return selection instanceof IFile;
+	public boolean canHandleSelection(Object obj) {
+		return obj instanceof IFile;
 	}
 
 	@Override
-	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		IFile selectionAsFile = (IFile) selection;
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(),
-				selectionAsFile.getFullPath().toString(), selectionAsFile.getName());
-		return wrapper;
+	public String getName(Object obj) {
+		IFile selectionAsFile = (IFile) obj;
+		return selectionAsFile.getName();
 	}
 
 	@Override
-	public Object resolveArtifact(EObject artifact) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getURI(Object obj) {
+		IFile selectionAsFile = (IFile) obj;
+		return selectionAsFile.getFullPath().toString();
+	}
+
+	@Override
+	public Image getIcon(Object obj) {
+		List<Object> extensions = ExtensionPointHelper.getExtensions("org.eclipse.ui.navigator.navigatorContent", "labelProvider");
+		
+		for (Object ext : extensions) {
+			if (ext instanceof ILabelProvider) {
+				try {
+					Image icon = ((ILabelProvider) ext).getImage(obj);
+					if (icon != null) {
+						return icon;
+					}
+				} catch (Exception ex) {
+				}
+			}
+		}
+
+		return super.getIcon(obj);
 	}
 }

@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.mylyn;
 
-import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.mylyn.tasks.core.ITask;
 
 /**
  * A handler to allow tracing from and to tasks handled by Mylyn.
  */
-public class MylynHandler implements ArtifactHandler {
+public class MylynHandler extends AbstractArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
@@ -27,18 +25,21 @@ public class MylynHandler implements ArtifactHandler {
 	}
 
 	@Override
-	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		ITask task = (ITask) selection;
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), task.getUrl(),
-				task.getSummary());
-		return wrapper;
-	}
-
-	@Override
 	public Object resolveArtifact(EObject artifact) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getName(Object selection) {
+		ITask task = (ITask) selection;
+		return task.getSummary();
+	}
+
+	@Override
+	public String getURI(Object selection) {
+		ITask task = (ITask) selection;
+		return task.getUrl();
 	}
 
 }

@@ -12,17 +12,14 @@ package org.eclipse.capra.ui.views;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.ui.helpers.EMFHelper;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -34,7 +31,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
@@ -42,7 +38,6 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -56,9 +51,19 @@ public class SelectionView extends ViewPart {
 	public TableViewer viewer;
 
 	/** The maintained selection of EObjects */
-	private Set<Object> selection = new LinkedHashSet<>();
+	private List<ObjectWithHandler> selection = new ArrayList<>();
 
-	class ViewContentProvider implements IStructuredContentProvider {
+	private class ObjectWithHandler {
+		private Object o;
+		private ArtifactHandler handler;
+
+		public ObjectWithHandler(Object o, ArtifactHandler handler) {
+			this.o = o;
+			this.handler = handler;
+		}
+	}
+
+	private class ViewContentProvider implements IStructuredContentProvider {
 		@Override
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
@@ -73,37 +78,33 @@ public class SelectionView extends ViewPart {
 		}
 	}
 
-	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
-
+	private class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 		@Override
 		public String getText(Object element) {
-			if (element instanceof EObject) {
-				return EMFHelper.getIdentifier((EObject) element);
-			} else
-				return element.toString();
-
+			return doGetText((ObjectWithHandler) element);
 		};
 
 		@Override
-		public String getColumnText(Object obj, int index) {
-			return getText(obj);
+		public String getColumnText(Object element, int index) {
+			return doGetText((ObjectWithHandler) element);
 		}
 
 		@Override
-		public Image getColumnImage(Object obj, int index) {
-			return getImage(obj);
+		public Image getColumnImage(Object element, int index) {
+			return doGetImage((ObjectWithHandler) element);
 		}
 
 		@Override
-		public Image getImage(Object obj) {
-			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
+		public Image getImage(Object element) {
+			return doGetImage((ObjectWithHandler) element);
 		}
-	}
 
-	class NameSorter extends ViewerSorter {
-		@Override
-		public void sort(Viewer viewer, Object[] elements) {
-			// Retain order in which the user dragged in the elements
+		private String doGetText(ObjectWithHandler objWitHandler) {
+			return objWitHandler.handler.getName(objWitHandler.o);
+		}
+
+		private Image doGetImage(ObjectWithHandler objWithHandler) {
+			return objWithHandler.handler.getIcon(objWithHandler.o);
 		}
 	}
 
@@ -132,13 +133,14 @@ public class SelectionView extends ViewPart {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
 
 		getSite().setSelectionProvider(viewer);
 		hookContextMenu();
 
-		int ops = DND.DROP_COPY | DND.DROP_MOVE;
+		// DND.DROP_MOVE deletes files when dropping files outside of eclipse.
+		// Press CTRL for link.
+		int ops = DND.DROP_COPY | DND.DROP_LINK;
 		Transfer[] transfers = new Transfer[] { org.eclipse.ui.part.ResourceTransfer.getInstance(),
 				org.eclipse.ui.part.EditorInputTransfer.getInstance(), org.eclipse.swt.dnd.FileTransfer.getInstance(),
 				org.eclipse.swt.dnd.RTFTransfer.getInstance(), org.eclipse.swt.dnd.TextTransfer.getInstance(),
@@ -166,24 +168,30 @@ public class SelectionView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void dropToSelection(Object data) {
-
+		Collection<?> coll = null;
 		if (data instanceof TreeSelection) {
 			TreeSelection tree = (TreeSelection) data;
-			if (tree.toList().stream().allMatch(this::validateSelection))
-				selection.addAll(tree.toList());
+			coll = tree.toList();
 		} else if (data instanceof Collection<?>) {
-			Collection<Object> arrayselection = (Collection<Object>) data;
-			if (arrayselection.stream().allMatch(this::validateSelection))
-				selection.addAll(arrayselection);
-		} else if (validateSelection(data))
-			selection.add(data);
+			coll = (Collection<?>) data;
+		} else {
+			coll = Collections.singleton(data);
+		}
+
+		for (Object o : coll) {
+			ArtifactHandler handler = getHandler(o);
+			if (handler != null) {
+				ObjectWithHandler objectWithLabel = new ObjectWithHandler(o, handler);
+				selection.add(objectWithLabel);
+			}
+		}
 
 		viewer.refresh();
+
 	}
 
-	private boolean validateSelection(Object target) {
+	private ArtifactHandler getHandler(Object target) {
 		Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
 		List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
 				.filter(handler -> handler.canHandleSelection(target)).collect(Collectors.toList());
@@ -191,20 +199,19 @@ public class SelectionView extends ViewPart {
 		if (availableHandlers.size() == 0) {
 			MessageDialog.openWarning(getSite().getShell(), "No handler for selected item",
 					"There is no handler for " + target + " so it will be ignored.");
+			return null;
 		} else if (availableHandlers.size() > 1 && !priorityHandler.isPresent()) {
 			MessageDialog.openWarning(getSite().getShell(), "Multiple handlers for selected item",
 					"There are multiple handlers for " + target + " so it will be ignored.");
+			return null;
 		} else if (availableHandlers.size() > 1 && !priorityHandler.isPresent()) {
-			// TODO check if the priority handler can give exactly one artifact
-			// handler, if not flag for multiple selections
+			return priorityHandler.get().getSelectedHandler(availableHandlers, target);
 		} else
-			return true;
-
-		return false;
+			return availableHandlers.get(0);
 	}
 
 	public List<Object> getSelection() {
-		return new ArrayList<Object>(selection);
+		return selection.stream().map(objectWithHandler -> objectWithHandler.o).collect(Collectors.toList());
 	}
 
 	public void clearSelection() {

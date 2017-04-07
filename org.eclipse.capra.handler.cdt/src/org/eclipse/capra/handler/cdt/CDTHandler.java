@@ -11,7 +11,7 @@
 package org.eclipse.capra.handler.cdt;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICElement;
@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EObject;
  * Handler to allow tracing to and from elements of C such as files and
  * functions. Uses CDT as the foundation.
  */
-public class CDTHandler implements ArtifactHandler {
+public class CDTHandler extends AbstractArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
@@ -29,19 +29,22 @@ public class CDTHandler implements ArtifactHandler {
 	}
 
 	@Override
-	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		ICElement cu = (ICElement) selection;
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), cu.getHandleIdentifier(),
-				cu.getElementName());
-		return wrapper;
-	}
-
-	@Override
 	public ICElement resolveArtifact(EObject artifact) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		String uri = adapter.getArtifactUri(artifact);
 		return CoreModel.create(uri);
+	}
+
+	@Override
+	public String getName(Object selection) {
+		ICElement cu = (ICElement) selection;
+		return cu.getElementName();
+	}
+
+	@Override
+	public String getURI(Object selection) {
+		ICElement cu = (ICElement) selection;
+		return cu.getHandleIdentifier();
 	}
 
 }

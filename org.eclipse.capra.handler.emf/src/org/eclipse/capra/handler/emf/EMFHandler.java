@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.emf;
 
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
+import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.emf.ecore.EObject;
 
 /**
  * Handler to allow tracing to and from arbitrary model elements handled by EMF.
  */
-public class EMFHandler implements ArtifactHandler {
+public class EMFHandler extends AbstractArtifactHandler {
 
 	public boolean canHandleSelection(Object selection) {
 		return selection instanceof EObject;
-
 	}
 
 	@Override
@@ -29,8 +29,8 @@ public class EMFHandler implements ArtifactHandler {
 	}
 
 	@Override
-	public Object resolveArtifact(EObject artifact) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getName(Object selection) {
+		EObject eObject = EObject.class.cast(selection);
+		return EMFHelper.getIdentifier(eObject);
 	}
 }

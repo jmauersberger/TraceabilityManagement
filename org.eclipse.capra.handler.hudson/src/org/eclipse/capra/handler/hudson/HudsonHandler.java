@@ -11,6 +11,7 @@
 package org.eclipse.capra.handler.hudson;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
@@ -22,7 +23,7 @@ import org.eclipse.mylyn.builds.internal.core.TestElement;
  * integration server Hudson via the integrated Mylyn facilities. In particular,
  * it is possible to trace to tests and to builds.
  */
-public class HudsonHandler implements ArtifactHandler {
+public class HudsonHandler extends AbstractArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
@@ -53,6 +54,33 @@ public class HudsonHandler implements ArtifactHandler {
 	@Override
 	public Object resolveArtifact(EObject artifact) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getName(Object selection) {
+		if (selection instanceof TestElement) {
+			TestElement test = (TestElement) selection;
+			return test.getLabel();
+		} else if (selection instanceof BuildElement) {
+			BuildElement build = (BuildElement) selection;
+			return build.getLabel();
+		}
+
+		return null;
+	}
+
+	@Override
+	public String getURI(Object selection) {
+		if (selection instanceof TestElement) {
+			TestElement test = (TestElement) selection;
+			// TODO Need to get the URI for where the test is
+			return test.getLabel();
+		} else if (selection instanceof BuildElement) {
+			BuildElement build = (BuildElement) selection;
+			return build.getUrl();
+		}
+		
 		return null;
 	}
 

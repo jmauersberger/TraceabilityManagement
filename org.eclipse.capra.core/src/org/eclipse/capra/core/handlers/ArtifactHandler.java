@@ -11,6 +11,7 @@
 package org.eclipse.capra.core.handlers;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * This interface defines functionality required to map chosen Objects in the
@@ -35,6 +36,31 @@ public interface ArtifactHandler {
 	boolean canHandleSelection(Object selection);
 
 	/**
+	 * Gets the name for the selected object.
+	 * 
+	 * @param selection
+	 * @return the name
+	 */
+	String getName(Object selection);
+
+	/**
+	 * Gets the icon to be displayed together with the name of the selected
+	 * object.
+	 * 
+	 * @param selection
+	 * @return the image
+	 */
+	Image getIcon(Object selection);
+
+	/**
+	 * Gets the URI for the selected object.
+	 * 
+	 * @param selection
+	 * @return the URI as a string
+	 */
+	String getURI(Object selection);
+
+	/**
 	 * Map the object selection to an EObject.
 	 * 
 	 * @param selection
@@ -54,5 +80,4 @@ public interface ArtifactHandler {
 	 * @return originally selected object
 	 */
 	Object resolveArtifact(EObject artifact);
-
 }

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Doorshandler
+Bundle-SymbolicName: org.eclipse.capra.handler.doors;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: jacob/jacob.jar,
+ .
+Bundle-NativeCode: jacob/jacob-1.18-x86.dll; processor="x86"; osname="win32",
+    jacob/jacob-1.18-x64.dll; processor="x86_64"; osname="win32"
+Export-Package: com.jacob.activeX,
+ com.jacob.com
+Require-Bundle: org.eclipse.capra.core,
+ org.eclipse.osgi,
+ org.eclipse.jface
+Import-Package: org.eclipse.core.runtime

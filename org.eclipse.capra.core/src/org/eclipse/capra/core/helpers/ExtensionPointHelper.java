@@ -55,17 +55,24 @@ public class ExtensionPointHelper {
 	 * @return List of extensions
 	 */
 	public static List<Object> getExtensions(final String ID, final String CONFIG) {
+		List<Object> extensions = new ArrayList<>();
+
 		try {
 			IConfigurationElement[] configs = Platform.getExtensionRegistry().getConfigurationElementsFor(ID);
 
-			List<Object> extensions = new ArrayList<>();
-			for (IConfigurationElement config : configs)
-				extensions.add(config.createExecutableExtension(CONFIG));
+			for (IConfigurationElement config : configs) {
+				try {
+					extensions.add(config.createExecutableExtension(CONFIG));
+				} catch (Exception ex) {
+				}
+
+			}
 
 			return extensions;
 		} catch (Exception ex) {
-			return Collections.emptyList();
 		}
+
+		return extensions;
 	}
 
 	/**

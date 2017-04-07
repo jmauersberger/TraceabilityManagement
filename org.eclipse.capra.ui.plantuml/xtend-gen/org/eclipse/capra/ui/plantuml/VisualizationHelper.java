@@ -1,16 +1,17 @@
 package org.eclipse.capra.ui.plantuml;
 
-import com.google.common.base.Objects;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
-import org.eclipse.capra.ui.helpers.EMFHelper;
-import org.eclipse.capra.ui.plantuml.Connections;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtend2.lib.StringConcatenation;
+
+import com.google.common.base.Objects;
 
 @SuppressWarnings("all")
 public class VisualizationHelper {

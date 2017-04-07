@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.papyrus;
 
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
+import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.TreeElement;
 
@@ -18,7 +19,7 @@ import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.
  * A handler to create trace links from and to model elements created in
  * Papyrus.
  */
-public class PapyrusHandler implements ArtifactHandler {
+public class PapyrusHandler extends AbstractArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
@@ -33,9 +34,8 @@ public class PapyrusHandler implements ArtifactHandler {
 	}
 
 	@Override
-	public Object resolveArtifact(EObject artifact) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getName(Object selection) {
+		EObject eObject = EObject.class.cast(selection);
+		return EMFHelper.getIdentifier(eObject);
 	}
-
 }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.gef;
 
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
 import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
@@ -19,28 +19,25 @@ import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
  * Handler to allow tracing to and from visual model representations handled by
  * editors built with GEF.
  */
-public class GEFHandler implements ArtifactHandler {
+public class GEFHandler extends AbstractArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
-		// TODO Auto-generated method stub
 		return selection instanceof EditPart;
-
 	}
 
 	@Override
 	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		// TODO Auto-generated method stub
 		EditPart sel = (EditPart) selection;
-
+		// TODO: Kick Papyrus EMFHelper
 		return EMFHelper.getEObject(sel);
-
 	}
 
 	@Override
-	public Object resolveArtifact(EObject artifact) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getName(Object selection) {
+		EditPart sel = (EditPart) selection;
+		EObject eObject = EMFHelper.getEObject(sel);
+		return org.eclipse.capra.core.helpers.EMFHelper.getIdentifier(eObject);
 	}
 
 }

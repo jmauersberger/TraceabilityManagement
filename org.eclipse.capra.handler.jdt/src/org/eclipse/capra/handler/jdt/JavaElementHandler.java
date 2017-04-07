@@ -11,7 +11,7 @@
 package org.eclipse.capra.handler.jdt;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jdt.core.IJavaElement;
@@ -21,7 +21,7 @@ import org.eclipse.jdt.core.JavaCore;
  * A handler to allow creating traces to and from java elements such as classes
  * and methods based on JDT.
  */
-public class JavaElementHandler implements ArtifactHandler {
+public class JavaElementHandler extends AbstractArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
@@ -33,19 +33,22 @@ public class JavaElementHandler implements ArtifactHandler {
 	}
 
 	@Override
-	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		IJavaElement cu = (IJavaElement) selection;
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), cu.getHandleIdentifier(),
-				cu.getElementName());
-		return wrapper;
-	}
-
-	@Override
 	public IJavaElement resolveArtifact(EObject artifact) {
 		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
 		String uri = adapter.getArtifactUri(artifact);
 		return JavaCore.create(uri);
+	}
+
+	@Override
+	public String getName(Object selection) {
+		IJavaElement cu = (IJavaElement) selection;
+		return cu.getElementName();
+	}
+
+	@Override
+	public String getURI(Object selection) {
+		IJavaElement cu = (IJavaElement) selection;
+		return cu.getHandleIdentifier();
 	}
 
 }
