@@ -54,7 +54,7 @@ public class Connections {
 		id2Label = new LinkedHashMap<>();
 		allObjects.forEach(o -> {
 			String id = object2Id.get(o);
-			String label = EMFHelper.getIdentifier(o);
+			String label = EMFHelper.createUIString(o);
 			id2Label.put(id, label);
 		});
 	}
@@ -85,7 +85,7 @@ public class Connections {
 			c.getTargets().forEach(trg -> {
 				if (!trg.equals(c.getOrigin())) {
 					arrows.add(object2Id.get(c.getOrigin()) + "--" + object2Id.get(trg) + ":"
-							+ EMFHelper.getIdentifier(c.getTlink()));
+							+ EMFHelper.createUIString(c.getTlink()));
 				}
 			});
 		});

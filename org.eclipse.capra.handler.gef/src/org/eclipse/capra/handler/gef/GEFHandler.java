@@ -37,7 +37,7 @@ public class GEFHandler extends AbstractArtifactHandler {
 	public String getName(Object selection) {
 		EditPart sel = (EditPart) selection;
 		EObject eObject = EMFHelper.getEObject(sel);
-		return org.eclipse.capra.core.helpers.EMFHelper.getIdentifier(eObject);
+		return org.eclipse.capra.core.helpers.EMFHelper.createUIString(eObject);
 	}
 
 }

@@ -31,6 +31,6 @@ public class EMFHandler extends AbstractArtifactHandler {
 	@Override
 	public String getName(Object selection) {
 		EObject eObject = EObject.class.cast(selection);
-		return EMFHelper.getIdentifier(eObject);
+		return EMFHelper.createUIString(eObject);
 	}
 }

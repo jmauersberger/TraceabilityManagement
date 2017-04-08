@@ -108,7 +108,7 @@ public class TraceCreationHandler extends AbstractHandler {
 		dialog.setTitle("Select the trace type you want to create");
 		dialog.setElements(traceTypes.toArray());
 		dialog.setMessage("Selection: "
-				+ selectionAsEObjects.stream().map(EMFHelper::getIdentifier).collect(Collectors.toList()));
+				+ selectionAsEObjects.stream().map(EMFHelper::createUIString).collect(Collectors.toList()));
 
 		if (dialog.open() == Window.OK) {
 			return Optional.of((EClass) dialog.getFirstResult());

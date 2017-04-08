@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.handler.doors.util.DxlRunner;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
@@ -44,7 +45,7 @@ public class DoorsHandler extends AbstractArtifactHandler {
 				if (uri.getScheme().equalsIgnoreCase("doors")) {
 					return true;
 				}
-			} catch (URISyntaxException exception) {
+			} catch (Exception ex) {
 				return false;
 			}
 		}
@@ -62,11 +63,11 @@ public class DoorsHandler extends AbstractArtifactHandler {
 		// \"doors://doors.ikv-intern.local:36677/?version=2&prodID=0&urn=urn:telelogic::1-589c794e772f66ea-O-3-00000040\"");
 
 		StringBuffer script = new StringBuffer(dxl);
-		script.append( "string url = \"");
-		script .append( obj);
-		script .append( "\"\n");
-		script .append( "string result = getRequirementDescription(url)\n");
-		script .append( "oleSetResult(result)\n");
+		script.append("string url = \"");
+		script.append(obj);
+		script.append("\"\n");
+		script.append("string result = getRequirementDescription(url)\n");
+		script.append("oleSetResult(result)\n");
 		String result = DxlRunner.getInstance().run(script.toString());
 
 		return result;
@@ -75,6 +76,17 @@ public class DoorsHandler extends AbstractArtifactHandler {
 	@Override
 	public Image getIcon(Object obj) {
 		return DoorsHandler.icon;
+	}
+
+	@Override
+	public Object resolveArtifact(EObject artifact) {
+		if (artifact instanceof ArtifactWrapper) {
+			String uri = ((ArtifactWrapper) artifact).getUri();
+			if (uri.toLowerCase().startsWith("doors")) {
+				return uri;
+			}
+		}
+		return super.resolveArtifact(artifact);
 	}
 
 	private static StringBuffer readTextfile(String path) {
@@ -106,5 +118,10 @@ public class DoorsHandler extends AbstractArtifactHandler {
 			}
 		}
 		return sb;
+	}
+
+	@Override
+	public String getObjectTypeName(Object obj) {
+		return "Doors";
 	}
 }

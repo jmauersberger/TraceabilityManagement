@@ -34,4 +34,9 @@ public abstract class AbstractArtifactHandler implements ArtifactHandler {
 	public Object resolveArtifact(EObject artifact) {
 		return null;
 	}
+
+	@Override
+	public String getObjectTypeName(Object obj) {
+		return null;
+	}
 }

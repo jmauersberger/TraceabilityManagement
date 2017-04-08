@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.capra.core.helpers;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 
@@ -38,7 +39,7 @@ public class EMFHelper {
 	 * If the EObject does not have any attributes or all attributes have the
 	 * value null, this function will only return the type of the EObject.
 	 */
-	public static String getIdentifier(final EObject eObject) {
+	public static String createUIString(final EObject eObject) {
 		if (eObject == null)
 			return "<null>";
 		if (eObject.eClass() == null)
@@ -60,7 +61,23 @@ public class EMFHelper {
 		if (success)
 			identifier.append(" : ");
 
-		identifier.append(eObject.eClass().getName());
+		boolean customHandlerName = false;
+		Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
+		for (ArtifactHandler handler : artifactHandlers) {
+			Object obj = handler.resolveArtifact(eObject);
+			if (obj != null && handler.canHandleSelection(obj)) {
+				if (handler.getObjectTypeName(obj) != null) {
+					identifier.append(handler.getObjectTypeName(obj));
+					customHandlerName = true;
+					break;
+				}
+
+			}
+		}
+
+		if (!customHandlerName) {
+			identifier.append(eObject.eClass().getName());
+		}
 
 		return identifier.toString();
 	}
@@ -73,7 +90,7 @@ public class EMFHelper {
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
-	public static boolean tryGetSingleAttribute(final EObject eObject, final List<EAttribute> attributes,
+	private static boolean tryGetSingleAttribute(final EObject eObject, final List<EAttribute> attributes,
 			final StringBuilder name) {
 		boolean success = false;
 		if (attributes.size() == 1) {
@@ -94,7 +111,7 @@ public class EMFHelper {
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
-	public static boolean tryGetNameAttribute(final EObject eObject, final List<EAttribute> attributes,
+	private static boolean tryGetNameAttribute(final EObject eObject, final List<EAttribute> attributes,
 			final StringBuilder name) {
 		boolean success = false;
 		for (EAttribute feature : attributes) {
@@ -118,7 +135,7 @@ public class EMFHelper {
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
-	public static boolean tryGetAnyAttribute(final EObject eObject, final List<EAttribute> attributes,
+	private static boolean tryGetAnyAttribute(final EObject eObject, final List<EAttribute> attributes,
 			final StringBuilder name) {
 		boolean success = false;
 		String nonStringName = null;
@@ -142,27 +159,6 @@ public class EMFHelper {
 			success = true;
 		}
 		return success;
-	}
-
-	/**
-	 * Linearizes a tree to a list. The function checks if the provided
-	 * parameter is of type {@link EObject} and linearizes only if that is the
-	 * case.
-	 * 
-	 * @param object
-	 *            the object to linearize
-	 * @return a list of {@link EObject}s originally contained in the tree
-	 *         structure of the parameter or an empty list if the paramter was
-	 *         not an {@link EObject}
-	 */
-	public static List<EObject> linearize(Object object) {
-		ArrayList<EObject> elementList = new ArrayList<EObject>();
-		if (object instanceof EObject) {
-			EObject root = (EObject) object;
-			root.eAllContents().forEachRemaining(element -> elementList.add(element));
-			elementList.add(root);
-		}
-		return elementList;
 	}
 
 }

@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
-import org.eclipse.capra.core.helpers.EMFHelper;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.capra.ui.helpers.TraceCreationHelper;
 import org.eclipse.emf.ecore.EObject;
@@ -80,10 +79,10 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 
 			return VisualizationHelper.createNeighboursView(traces, selectedEObject);
 		} else if (selectedModels.size() == 2) {
-			firstModelElements = EMFHelper.linearize(selectedModels.get(0));
-			secondModelElements = EMFHelper.linearize(selectedModels.get(1));
+			firstModelElements = Util.linearize(selectedModels.get(0));
+			secondModelElements = Util.linearize(selectedModels.get(1));
 		} else {
-			firstModelElements = selectedModels.stream().flatMap(r -> EMFHelper.linearize(r).stream())
+			firstModelElements = selectedModels.stream().flatMap(r -> Util.linearize(r).stream())
 					.collect(Collectors.toList());
 
 			secondModelElements = firstModelElements;

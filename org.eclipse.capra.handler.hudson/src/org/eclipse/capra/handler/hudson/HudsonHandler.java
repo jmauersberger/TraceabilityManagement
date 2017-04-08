@@ -12,7 +12,6 @@ package org.eclipse.capra.handler.hudson;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
-import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.helpers.ExtensionPointHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.mylyn.builds.internal.core.BuildElement;

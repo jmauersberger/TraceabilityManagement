@@ -80,4 +80,13 @@ public interface ArtifactHandler {
 	 * @return originally selected object
 	 */
 	Object resolveArtifact(EObject artifact);
+
+	/**
+	 * Gets the type name of the object.
+	 * 
+	 * @param obj
+	 *            the object
+	 * @return the type name for the object
+	 */
+	String getObjectTypeName(Object obj);
 }

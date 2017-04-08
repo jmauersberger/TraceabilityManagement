@@ -12,5 +12,6 @@ Export-Package: com.jacob.activeX,
  com.jacob.com
 Require-Bundle: org.eclipse.capra.core,
  org.eclipse.osgi,
- org.eclipse.jface
+ org.eclipse.jface,
+ org.eclipse.capra.generic.tracemodels
 Import-Package: org.eclipse.core.runtime

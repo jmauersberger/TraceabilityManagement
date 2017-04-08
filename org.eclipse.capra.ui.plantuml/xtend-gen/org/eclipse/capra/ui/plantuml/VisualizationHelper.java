@@ -34,14 +34,14 @@ public class VisualizationHelper {
           {
             for(final EObject e : secondElements) {
               _builder.append("|");
-              String _identifier = EMFHelper.getIdentifier(e);
+              String _identifier = EMFHelper.createUIString(e);
               _builder.append(_identifier, "");
             }
           }
           _builder.newLineIfNotEmpty();
           {
             for(final EObject first : firstElements) {
-              String _identifier_1 = EMFHelper.getIdentifier(first);
+              String _identifier_1 = EMFHelper.createUIString(first);
               _builder.append(_identifier_1, "");
               _builder.append(" ");
               {
