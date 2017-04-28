@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.capra.core.adapters.Connection;
-import org.eclipse.capra.core.helpers.EMFHelper;
+import org.eclipse.capra.core.util.UIStringUtil;
+import org.eclipse.capra.ui.plantuml.util.Connection;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -42,8 +42,9 @@ public class Connections {
 		origin = selectedObject;
 
 		allObjects = new LinkedHashSet<>();
-		allObjects.add(origin);
-		connections.forEach(c -> allObjects.addAll(c.getTargets()));
+		allObjects.add(selectedObject);
+		connections.forEach(c -> allObjects.add(c.getTarget()));
+		connections.forEach(c -> allObjects.add(c.getSource()));
 
 		object2Id = new LinkedHashMap<>();
 		int i = 0;
@@ -54,7 +55,7 @@ public class Connections {
 		id2Label = new LinkedHashMap<>();
 		allObjects.forEach(o -> {
 			String id = object2Id.get(o);
-			String label = EMFHelper.createUIString(o);
+			String label = UIStringUtil.createUIString(o);
 			id2Label.put(id, label);
 		});
 	}
@@ -78,18 +79,29 @@ public class Connections {
 		return id2Label.get(id);
 	}
 
+	private String createArrowString(String sourceID, String targetID, String linkType) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(sourceID);
+		sb.append("-->");
+		sb.append(targetID);
+		sb.append(':');
+		sb.append(linkType);
+		return sb.toString();
+	}
+
 	public List<String> arrows() {
 		List<String> arrows = new ArrayList<>();
-
-		connections.forEach(c -> {
-			c.getTargets().forEach(trg -> {
-				if (!trg.equals(c.getOrigin())) {
-					arrows.add(object2Id.get(c.getOrigin()) + "--" + object2Id.get(trg) + ":"
-							+ EMFHelper.createUIString(c.getTlink()));
-				}
-			});
-		});
-
+		for (Connection connection : connections) {
+			EObject source = connection.getSource();
+			EObject target = connection.getTarget();
+			if (!target.equals(connection.getSource())) {
+				String sourceID = object2Id.get(source);
+				String targetID = object2Id.get(target);
+				String linkType = connection.getLinkType();
+				String arrowString = createArrowString(sourceID, targetID, linkType);
+				arrows.add(arrowString);
+			}
+		}
 		return arrows;
 	}
 }

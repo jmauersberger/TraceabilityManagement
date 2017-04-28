@@ -8,7 +8,7 @@
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.capra.core.helpers;
+package org.eclipse.capra.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,8 +18,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.TraceLinkAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.PersistenceAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -30,10 +31,12 @@ import org.eclipse.core.runtime.Platform;
 /**
  * Provides functionality to work with relevant Capra extension points.
  */
-public class ExtensionPointHelper {
+public class ExtensionPointUtil {
 
-	private static final String TRACE_ID = "org.eclipse.capra.configuration.TraceabilityMetaModel";
+	private static final String TRACE_ID = "org.eclipse.capra.configuration.TraceLinkMetaModelAdapter";
 	private static final String TRACE_CONFIG = "class";
+	private static final String TRACE_LINK_ID = "org.eclipse.capra.configuration.TraceLinkAdapter";
+	private static final String TRACE__LINK_CONFIG = "class";
 	private static final String PERSISTENCE_ID = "org.eclipse.capra.configuration.persistenceHandler";
 	private static final String PERSISTENCE_CONFIG = "class";
 	private static final String ARTIFACT_ID = "org.eclipse.capra.configuration.ArtifactMetaModel";
@@ -65,7 +68,6 @@ public class ExtensionPointHelper {
 					extensions.add(config.createExecutableExtension(CONFIG));
 				} catch (Exception ex) {
 				}
-
 			}
 
 			return extensions;
@@ -109,15 +111,15 @@ public class ExtensionPointHelper {
 	}
 
 	/**
-	 * Gets the configured {@link TracePersistenceAdapter}.
+	 * Gets the configured {@link PersistenceAdapter}.
 	 * 
 	 * @return The configured {@code TracePersistenceAdapter}. If none is
 	 *         configured, an empty instance of {@link Optional} is returned.
 	 */
-	public static Optional<TracePersistenceAdapter> getTracePersistenceAdapter() {
+	public static Optional<PersistenceAdapter> getTracePersistenceAdapter() {
 		try {
 			Object extension = getExtensions(PERSISTENCE_ID, PERSISTENCE_CONFIG).get(0);
-			return Optional.of((TracePersistenceAdapter) extension);
+			return Optional.of((PersistenceAdapter) extension);
 		} catch (Exception e) {
 			return Optional.empty();
 		}
@@ -176,6 +178,15 @@ public class ExtensionPointHelper {
 			return Optional.of((PriorityHandler) extension);
 		} catch (Exception e) {
 			return Optional.empty();
+		}
+	}
+
+	public static List<TraceLinkAdapter> getTraceLinkAdapters() {
+		try {
+			List<Object> extensions = getExtensions(TRACE_LINK_ID, TRACE__LINK_CONFIG);
+			return extensions.stream().map(obj -> (TraceLinkAdapter) obj).collect(Collectors.toList());
+		} catch (Exception e) {
+			return Collections.<TraceLinkAdapter>emptyList();
 		}
 	}
 }

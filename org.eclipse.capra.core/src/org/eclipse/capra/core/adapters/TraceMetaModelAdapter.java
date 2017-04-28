@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.capra.core.adapters;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -38,7 +36,9 @@ public interface TraceMetaModelAdapter {
 	 * @return A collection of possible types of traces that can be created for
 	 *         the given selection
 	 */
-	Collection<EClass> getAvailableTraceTypes(List<EObject> selection);
+	List<TraceLinkAdapter> getAvailableTraceTypes(List<EObject> sources, List<EObject> targets);
+
+	TraceLinkAdapter getTraceLinkAdapter(EObject trace);
 
 	/**
 	 * Used to create a trace of the given type
@@ -53,7 +53,7 @@ public interface TraceMetaModelAdapter {
 	 *            Objects to create the trace for
 	 * @return root of trace model that now contains the newly created trace
 	 */
-	EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection);
+	void addTrace(EObject trace, EObject traceModel);
 
 	/**
 	 * Used to delete a trace
@@ -65,21 +65,21 @@ public interface TraceMetaModelAdapter {
 	 * @param second
 	 *            Second object
 	 */
-	void deleteTrace(EObject first, EObject second, EObject traceModel);
+	void deleteTrace(EObject traceToDelete, EObject traceModel);
 
 	/**
 	 * Decide if two objects are connected according to the given trace model
 	 * 
-	 * @param first
+	 * @param source
 	 *            First object
-	 * @param second
+	 * @param target
 	 *            Second object
 	 * @param traceModel
 	 *            Trace model to base decision on
 	 * @return <code>true</code> if object are connected, <code>false</code>
 	 *         otherwise
 	 */
-	boolean isThereATraceBetween(EObject first, EObject second, EObject traceModel);
+	List<EObject> getTracesBetween(EObject source, EObject target, EObject traceModel);
 
 	/**
 	 * Determine a list of all objects connected to element according to the
@@ -93,20 +93,7 @@ public interface TraceMetaModelAdapter {
 	 * @return A Map with the following structure: [Trace object t -> {list of
 	 *         all objects connected to element via t}]
 	 */
-	List<Connection> getConnectedElements(EObject element, EObject traceModel);
+	List<EObject> getTracesFromSource(EObject source, EObject traceModel);
 
-	/**
-	 * Determine a list of all objects connected to element according to the
-	 * given trace model
-	 * 
-	 * @param element
-	 *            The element used to determine the list of connected objects.
-	 *            Note that this element could be a trace in the trace model
-	 * @param traceModel
-	 *            Trace model to base calculation on
-	 * @return A Map with the following structure: [Trace object t -> {list of
-	 *         all objects connected to element via t}]
-	 */
-	List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel);
-
+	List<EObject> getTracesToTarget(EObject target, EObject traceModel);
 }

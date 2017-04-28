@@ -11,109 +11,101 @@
 package org.eclipse.capra.ui.handlers;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.CapraException;
+import org.eclipse.capra.core.adapters.TraceLinkAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.adapters.PersistenceAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
-import org.eclipse.capra.core.handlers.PriorityHandler;
-import org.eclipse.capra.core.helpers.EMFHelper;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.operations.CreateConnection;
+import org.eclipse.capra.core.util.ArtifactWrappingUtil;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 public class TraceCreationHandler extends AbstractHandler {
+	protected Collection<ArtifactHandler> artifactHandlers = ExtensionPointUtil.getArtifactHandlers();
+	protected TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
+	protected List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
+	protected PersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		createTrace(window, (traceTypes, selection) -> getTraceTypeToCreate(window, traceTypes, selection));
+		Shell shell = window.getShell();
+		try {
+			doExecute(shell);
+		} catch (CapraException e) {
+			showMessage(shell, "Exception Occurred", e.getLocalizedMessage());
+		}
 		return null;
 	}
 
-	public void createTrace(IWorkbenchWindow window,
-			BiFunction<Collection<EClass>, List<EObject>, Optional<EClass>> chooseTraceType) {
+	private void doExecute(Shell shell) throws CapraException {
 		List<Object> selection = SelectionView.getOpenedView().getSelection();
 
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		List<Object> sources = Collections.singletonList(selection.get(0));
+		List<Object> targets = selection.subList(1, selection.size());
 
-		ResourceSet resourceSet = new ResourceSetImpl();
-		// add trace model to resource set
-		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
-		// add artifact model to resource set
-		EObject artifactModel = persistenceAdapter.getArtifactWrappers(resourceSet);
-
-		Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
-
-		List<EObject> selectionAsEObjects = mapSelectionToEObjects(window, artifactModel, artifactHandlers, selection);
-
-		Collection<EClass> traceTypes = traceAdapter.getAvailableTraceTypes(selectionAsEObjects);
-		Optional<EClass> chosenType = chooseTraceType.apply(traceTypes, selectionAsEObjects);
-
-		if (chosenType.isPresent()) {
-			EObject root = traceAdapter.createTrace(chosenType.get(), traceModel, selectionAsEObjects);
-			persistenceAdapter.saveTracesAndArtifacts(root, artifactModel);
-		}
-	}
-
-	private List<EObject> mapSelectionToEObjects(IWorkbenchWindow window, EObject artifactModel,
-			Collection<ArtifactHandler> artifactHandlers, List<Object> selection) {
-		return selection.stream().map(sel -> convertToEObject(window, sel, artifactHandlers, artifactModel))
-				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
-	}
-
-	private Optional<EObject> convertToEObject(IWorkbenchWindow window, Object sel,
-			Collection<ArtifactHandler> artifactHandlers, EObject artifactModel) {
-		List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
-				.filter(handler -> handler.canHandleSelection(sel)).collect(Collectors.toList());
-		Optional<PriorityHandler> priorityHandler = ExtensionPointHelper.getPriorityHandler();
-
-		if (availableHandlers.size() == 1) {
-			return Optional.of(availableHandlers.get(0).getEObjectForSelection(sel, artifactModel));
-		} else if (availableHandlers.size() > 1 && priorityHandler.isPresent()) {
-			ArtifactHandler selectedHandler = priorityHandler.get().getSelectedHandler(availableHandlers, sel);
-			return Optional.of(selectedHandler.getEObjectForSelection(sel, artifactModel));
+		List<TraceLinkAdapter> availableTraceTypes = getAvailableTraceTypes(selection);
+		Optional<TraceLinkAdapter> selectedTraceType = selectTraceType(shell, availableTraceTypes);
+		if (selectedTraceType.isPresent()) {
+			CreateConnection createOperation = new CreateConnection(sources, targets, selectedTraceType.get().getLinkType());
+			createOperation.execute();
+			
 		} else {
-			MessageDialog.openWarning(window.getShell(), "No handler for selected item",
-					"There is no handler for " + sel + " so it will be ignored.");
-			return Optional.empty();
+			throw new CapraException("No trace type selected.");
 		}
 
 	}
 
-	private Optional<EClass> getTraceTypeToCreate(IWorkbenchWindow window, Collection<EClass> traceTypes,
-			List<EObject> selectionAsEObjects) {
-		ElementListSelectionDialog dialog = new ElementListSelectionDialog(window.getShell(), new LabelProvider() {
+	private List<TraceLinkAdapter> getAvailableTraceTypes(List<Object> selection) throws CapraException {
+		ResourceSet resourceSet = new ResourceSetImpl();
+		EObject artifactWrapperModel = persistenceAdapter.getArtifactWrapperModel(resourceSet);
+
+		List<EObject> selectionAsEObjects = ArtifactWrappingUtil.wrap(selection, artifactHandlers,
+				artifactWrapperModel);
+		List<EObject> sources = Collections.singletonList(selectionAsEObjects.get(0));
+		List<EObject> targets = selectionAsEObjects.subList(1, selectionAsEObjects.size());
+		return traceAdapter.getAvailableTraceTypes(sources, targets);
+	}
+
+	private Optional<TraceLinkAdapter> selectTraceType(Shell shell, List<TraceLinkAdapter> availableTraceTypes) {
+
+		ElementListSelectionDialog dialog = new ElementListSelectionDialog(shell, new LabelProvider() {
 			@Override
 			public String getText(Object element) {
-				EClass eclass = (EClass) element;
-				return eclass.getName();
+				TraceLinkAdapter adapter = (TraceLinkAdapter) element;
+				return adapter.getLinkType();
 			}
 		});
 		dialog.setTitle("Select the trace type you want to create");
-		dialog.setElements(traceTypes.toArray());
-		dialog.setMessage("Selection: "
-				+ selectionAsEObjects.stream().map(EMFHelper::createUIString).collect(Collectors.toList()));
+		dialog.setElements(availableTraceTypes.toArray());
+		dialog.setMessage("The following " + traceLinkAdapters.size()
+				+ " trace types are available to link the first element in the selection to all other elements.");
 
 		if (dialog.open() == Window.OK) {
-			return Optional.of((EClass) dialog.getFirstResult());
+			return Optional.of((TraceLinkAdapter) dialog.getFirstResult());
 		}
 
 		return Optional.empty();
+	}
+
+	private void showMessage(Shell shell, String title, String message) {
+		MessageDialog.openError(shell, title, message);
 	}
 }

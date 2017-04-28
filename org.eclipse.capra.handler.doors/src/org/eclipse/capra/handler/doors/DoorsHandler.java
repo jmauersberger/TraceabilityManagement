@@ -86,7 +86,7 @@ public class DoorsHandler extends AbstractArtifactHandler {
 				return uri;
 			}
 		}
-		return super.resolveArtifact(artifact);
+		return null;
 	}
 
 	private static StringBuffer readTextfile(String path) {

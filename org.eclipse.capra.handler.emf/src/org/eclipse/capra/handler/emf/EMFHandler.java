@@ -11,8 +11,9 @@
 package org.eclipse.capra.handler.emf;
 
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
-import org.eclipse.capra.core.helpers.EMFHelper;
+import org.eclipse.capra.core.util.UIStringUtil;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * Handler to allow tracing to and from arbitrary model elements handled by EMF.
@@ -31,6 +32,17 @@ public class EMFHandler extends AbstractArtifactHandler {
 	@Override
 	public String getName(Object selection) {
 		EObject eObject = EObject.class.cast(selection);
-		return EMFHelper.createUIString(eObject);
+		return UIStringUtil.createUIString(eObject);
+	}
+
+	@Override
+	public String getURI(Object selection) {
+		EObject eObject = EObject.class.cast(selection);
+		return EcoreUtil.getURI(eObject).toString();
+	}
+
+	@Override
+	public Object resolveArtifact(EObject artifact) {
+		return artifact;
 	}
 }

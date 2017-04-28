@@ -24,7 +24,7 @@ import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
 import org.eclipse.capra.core.adapters.Connection;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.capra.handler.cdt.CDTHandler;
 import org.eclipse.capra.handler.jdt.JavaElementHandler;
 import org.eclipse.capra.ui.handlers.TraceCreationHandler;
@@ -179,15 +179,15 @@ public class TestHelper {
 	}
 
 	public static boolean thereIsATraceBetween(EObject a, EObject b) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-		return traceAdapter.isThereATraceBetween(a, b,
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+		TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
+		return traceAdapter.existsTraceBetween(a, b,
 				persistenceAdapter.getTraceModel(a.eResource().getResourceSet()));
 	}
 
 	public static boolean thereIsATraceBetween(EObject a, IType b) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+		TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
 
 
 		List<Connection> connected = traceAdapter.getConnectedElements(a,
@@ -210,8 +210,8 @@ public class TestHelper {
 	}
 
 	public static boolean thereIsATraceBetween(EObject a, ICProject b) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		TraceMetaModelAdapter traceAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+		TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
 
 		List<Connection> connected = traceAdapter.getConnectedElements(a,
 				persistenceAdapter.getTraceModel(a.eResource().getResourceSet()));
@@ -232,7 +232,7 @@ public class TestHelper {
 	}
 
 	public static boolean thereIsATraceBetween(IResource r1, IResource r2) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
+		TracePersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
 		
 		EObject tracemodel = persistenceAdapter.getTraceModel(new ResourceSetImpl());
 		GenericTraceModel gtm = (GenericTraceModel) tracemodel;

@@ -12,6 +12,7 @@ package org.eclipse.capra.handler.gef;
 
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.EditPart;
 import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
 
@@ -37,7 +38,19 @@ public class GEFHandler extends AbstractArtifactHandler {
 	public String getName(Object selection) {
 		EditPart sel = (EditPart) selection;
 		EObject eObject = EMFHelper.getEObject(sel);
-		return org.eclipse.capra.core.helpers.EMFHelper.createUIString(eObject);
+		return org.eclipse.capra.core.util.UIStringUtil.createUIString(eObject);
+	}
+
+	@Override
+	public String getURI(Object selection) {
+		EditPart sel = (EditPart) selection;
+		EObject eObject = EMFHelper.getEObject(sel);
+		return EcoreUtil.getURI(eObject).toString();
+	}
+
+	@Override
+	public Object resolveArtifact(EObject artifact) {
+		return null;
 	}
 
 }

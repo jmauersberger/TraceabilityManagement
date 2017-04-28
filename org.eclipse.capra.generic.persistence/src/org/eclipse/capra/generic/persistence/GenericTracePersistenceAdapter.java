@@ -8,14 +8,15 @@
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.capra.generic.persistance;
+package org.eclipse.capra.generic.persistence;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.adapters.PersistenceAdapter;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -29,17 +30,17 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 /**
  * This generic implementation of
- * {@link org.eclipse.capra.core.adapters.TracePersistenceAdapter} creates a
+ * {@link org.eclipse.capra.core.adapters.PersistenceAdapter} creates a
  * special project in the workspace to house the trace link model and the
  * artifact model.
  */
-public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.TracePersistenceAdapter {
+public class GenericTracePersistenceAdapter implements PersistenceAdapter {
 
 	private static final String DEFAULT_PROJECT_NAME = "__WorkspaceTraceModels";
 	private static final String DEFAULT_TRACE_MODEL_NAME = "traceModel.xmi";
 	private static final String DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME = "artifactWrappers.xmi";
 
-	private Optional<EObject> loadModel(ResourceSet resourceSet, String modelName) {
+	private Optional<EObject> loadModel(String modelName, ResourceSet resourceSet) {
 		if (projectExist(DEFAULT_PROJECT_NAME) && fileExists(DEFAULT_PROJECT_NAME + "/" + modelName)) {
 			try {
 				URI uri = URI.createPlatformResourceURI(DEFAULT_PROJECT_NAME + "/" + modelName, true);
@@ -56,8 +57,8 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 
 	@Override
 	public EObject getTraceModel(ResourceSet resourceSet) {
-		TraceMetaModelAdapter adapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-		return loadModel(resourceSet, DEFAULT_TRACE_MODEL_NAME).orElse(adapter.createModel());
+		TraceMetaModelAdapter adapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
+		return loadModel(DEFAULT_TRACE_MODEL_NAME, resourceSet).orElse(adapter.createModel());
 	}
 
 	private boolean fileExists(String path) {
@@ -102,21 +103,13 @@ public class TracePersistenceAdapter implements org.eclipse.capra.core.adapters.
 	}
 
 	@Override
-	public EObject getArtifactWrappers(ResourceSet resourceSet) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
-		return loadModel(resourceSet, DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME).orElse(adapter.createModel());
+	public EObject getArtifactWrapperModel(ResourceSet resourceSet) {
+		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+		Optional<EObject> model = loadModel(DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME, resourceSet);
+		if (model.isPresent()) {
+			return model.get();
+		} else {
+			return adapter.createModel();
+		}
 	}
-
-	@Override
-	public EObject getTraceModel(EObject object) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public EObject getArtifactWrappers(EObject object) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

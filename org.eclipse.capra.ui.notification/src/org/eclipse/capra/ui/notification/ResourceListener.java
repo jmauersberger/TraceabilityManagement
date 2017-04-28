@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.PersistenceAdapter;
+import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -50,6 +49,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  */
 
 public class ResourceListener implements IResourceChangeListener {
+
 	// TODO Change into enumeration
 
 	public enum IssueType {
@@ -58,53 +58,61 @@ public class ResourceListener implements IResourceChangeListener {
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		URI uri;
-		TracePersistenceAdapter tracePersistenceAdapter;
-		ResourceSet resourceSet = new ResourceSetImpl();
-		EObject awc;
+		try {
+			URI uri;
+			PersistenceAdapter tracePersistenceAdapter;
+			ResourceSet resourceSet = new ResourceSetImpl();
+			EObject awc;
+			ArtifactMetaModelAdapter artifactAdapter;
 
-		tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		awc = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
-		uri = EcoreUtil.getURI(awc);
-		EList<ArtifactWrapper> artifactlist = ((ArtifactWrapperContainer) awc).getArtifacts();
-
-		// check if artifact model contains anything
-
-		if (artifactlist.size() > 0) {
+			artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+			tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+			awc = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
 			uri = EcoreUtil.getURI(awc);
-			IPath path = new Path(uri.toPlatformString(false));
-			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+			EObject artifactModel = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
+			List<EObject> artifacts = artifactAdapter.getArtifacts(artifactModel);
 
-			IResourceDelta delta = event.getDelta();
-			IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+			// check if artifact model contains anything
 
-				@Override
-				public boolean visit(IResourceDelta delta) throws CoreException {
+			if (artifacts.size() > 0) {
+				uri = EcoreUtil.getURI(awc);
+				IPath path = new Path(uri.toPlatformString(false));
+				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
-					IPath toPath = delta.getMovedToPath();
+				IResourceDelta delta = event.getDelta();
+				IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
 
-					if (delta.getKind() == IResourceDelta.REMOVED && toPath != null) {
+					@Override
+					public boolean visit(IResourceDelta delta) throws CoreException {
 
-						if (delta.getFullPath().toFile().getName().equalsIgnoreCase(toPath.toFile().getName()))
-							markupJob(delta, IssueType.ARTIFACT_MOVED, file, awc);
-						else
-							markupJob(delta, IssueType.ARTIFACT_RENAMED, file, awc);
+						IPath toPath = delta.getMovedToPath();
+
+						if (delta.getKind() == IResourceDelta.REMOVED && toPath != null) {
+
+							if (delta.getFullPath().toFile().getName().equalsIgnoreCase(toPath.toFile().getName()))
+								markupJob(delta, IssueType.ARTIFACT_MOVED, file, awc);
+							else
+								markupJob(delta, IssueType.ARTIFACT_RENAMED, file, awc);
+						}
+						if (delta.getKind() == IResourceDelta.REMOVED && toPath == null) {
+							markupJob(delta, IssueType.ARTIFACT_DELETED, file, awc);
+						}
+
+						if (delta.getKind() == IResourceDelta.CHANGED) {
+							markupJob(delta, IssueType.ARTIFACT_CHANGED, file, awc);
+						}
+						return true;
 					}
-					if (delta.getKind() == IResourceDelta.REMOVED && toPath == null) {
-						markupJob(delta, IssueType.ARTIFACT_DELETED, file, awc);
-					}
-
-					if (delta.getKind() == IResourceDelta.CHANGED) {
-						markupJob(delta, IssueType.ARTIFACT_CHANGED, file, awc);
-					}
-					return true;
+				};
+				try {
+					delta.accept(visitor);
+				} catch (CoreException e) {
+					e.printStackTrace();
 				}
-			};
-			try {
-				delta.accept(visitor);
-			} catch (CoreException e) {
-				e.printStackTrace();
 			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 
@@ -131,10 +139,20 @@ public class ResourceListener implements IResourceChangeListener {
 			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 
 				try {
-					EList<ArtifactWrapper> list = ((ArtifactWrapperContainer) awc).getArtifacts();
-					for (ArtifactWrapper aw : list) {
 
-						if (aw.getName().equals(delta.getResource().getName())) {
+					URI uri;
+					PersistenceAdapter tracePersistenceAdapter;
+					ResourceSet resourceSet = new ResourceSetImpl();
+					ArtifactMetaModelAdapter artifactAdapter;
+
+					artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+					tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+					EObject artifactModel = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
+					List<EObject> artifacts = artifactAdapter.getArtifacts(artifactModel);
+
+					for (EObject artifact : artifacts) {
+						ArtifactHandler artifactHandler = artifactAdapter.getArtifactHandler(artifact);
+						if (artifactHandler.getName(awc).equals(delta.getResource().getName())) {
 
 							if (issue == IssueType.ARTIFACT_RENAMED) {
 								IMarker marker = file
@@ -178,7 +196,7 @@ public class ResourceListener implements IResourceChangeListener {
 
 						}
 					}
-				} catch (CoreException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				return Status.OK_STATUS;

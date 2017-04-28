@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.core.adapters;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
@@ -20,7 +21,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
  * @author Anthony Anjorin, Salome Maro
  *
  */
-public interface TracePersistenceAdapter {
+public interface PersistenceAdapter {
 
 	/**
 	 * Load and return the trace model in the given resource set
@@ -31,17 +32,7 @@ public interface TracePersistenceAdapter {
 	 *         that loading failed or was not possible (there is no trace model
 	 *         to load at the moment)
 	 */
-	public EObject getTraceModel(ResourceSet resourceSet);
-
-	/**
-	 * Return the trace model for the given object
-	 * 
-	 * @param object
-	 *            EObject to return the model for
-	 * @return Root of trace model, Optional can be empty to indicate that there
-	 *         is no trace model for the object
-	 */
-	public EObject getTraceModel(EObject object);
+	EObject getTraceModel(ResourceSet resourceSet) throws CapraException;
 
 	/**
 	 * Load and return the container for all artifact wrappers in the given
@@ -53,17 +44,7 @@ public interface TracePersistenceAdapter {
 	 *         indicate that loading failed or was not possible (no container
 	 *         exists at the moment)
 	 */
-	public EObject getArtifactWrappers(ResourceSet resourceSet);
-
-	/**
-	 * Return the trace model for the given object
-	 * 
-	 * @param object
-	 *            EObject to return the model for
-	 * @return Root of trace model, Optional can be empty to indicate that there
-	 *         is no trace model for the object
-	 */
-	public EObject getArtifactWrappers(EObject object);
+	EObject getArtifactWrapperModel(ResourceSet resourceSet) throws CapraException;
 
 	/**
 	 * Save the trace and artifact models. Implementations are expected to: (i)
@@ -76,5 +57,7 @@ public interface TracePersistenceAdapter {
 	 * @param artifactModel
 	 *            The updated artifacts to be saved
 	 */
-	void saveTracesAndArtifacts(EObject traceModel, EObject artifactModel);
+	void saveTracesAndArtifacts(EObject traceModel, EObject artifactModel) throws CapraException;
+	
+	
 }

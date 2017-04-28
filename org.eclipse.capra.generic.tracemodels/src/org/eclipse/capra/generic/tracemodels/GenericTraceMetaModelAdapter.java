@@ -11,114 +11,121 @@
 package org.eclipse.capra.generic.tracemodels;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelFactory;
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
-import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
-import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.TraceLinkAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.emf.ecore.EClass;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.emf.ecore.EObject;
 
 /**
  * Provides generic functionality to deal with traceability meta models.
  */
-public class GenericMetaModelAdapter implements TraceMetaModelAdapter {
-
-	public GenericMetaModelAdapter() {
-		// TODO Auto-generated constructor stub
-	}
+public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 
 	@Override
 	public EObject createModel() {
+		// TODO: Make this more dynamic.
 		return GenericTraceMetaModelFactory.eINSTANCE.createGenericTraceModel();
 	}
 
 	@Override
-	public Collection<EClass> getAvailableTraceTypes(List<EObject> selection) {
-		Collection<EClass> traceTypes = new ArrayList<>();
-		if (selection.size() > 1) {
-
-			traceTypes.add(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
-		}
-		return traceTypes;
-	}
-
-	@Override
-	public EObject createTrace(EClass traceType, EObject traceModel, List<EObject> selection) {
-
-		GenericTraceModel TM = (GenericTraceModel) traceModel;
-		EObject trace = GenericTraceMetaModelFactory.eINSTANCE.create(traceType);
-		RelatedTo RelatedToTrace = (RelatedTo) trace;
-		RelatedToTrace.getItem().addAll(selection);
-
-		TM.getTraces().add(RelatedToTrace);
-		return TM;
-	}
-
-	@Override
-	public void deleteTrace(EObject first, EObject second, EObject traceModel) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isThereATraceBetween(EObject firstElement, EObject secondElement, EObject traceModel) {
-		GenericTraceModel root = (GenericTraceModel) traceModel;
-		List<RelatedTo> traces = root.getTraces();
-		for (RelatedTo trace : traces) {
-			if (firstElement != secondElement) {
-				return trace.getItem().contains(firstElement) && trace.getItem().contains(secondElement);
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public List<Connection> getConnectedElements(EObject element, EObject tracemodel) {
-		GenericTraceModel root = (GenericTraceModel) tracemodel;
-		List<Connection> connections = new ArrayList<>();
-		List<RelatedTo> traces = root.getTraces();
-
-		if (element instanceof RelatedTo) {
-			RelatedTo trace = (RelatedTo) element;
-			connections.add(new Connection(element, trace.getItem(), trace));
+	public List<TraceLinkAdapter> getAvailableTraceTypes(List<EObject> sources, List<EObject> targets) {
+		if (!sources.isEmpty() && !targets.isEmpty()) {
+			return Collections.singletonList(new GenericTraceLinkAdapter());
 		} else {
+			return Collections.<TraceLinkAdapter>emptyList();
+		}
+	}
 
-			for (RelatedTo trace : traces) {
-				if (trace.getItem().contains(element)) {
-					connections.add(new Connection(element, trace.getItem(), trace));
+	@Override
+	public List<EObject> getTracesBetween(EObject source, EObject target, EObject traceModel) {
+		List<EObject> resultTraces = new ArrayList<>();
+		if (traceModel instanceof GenericTraceModel) {
+			GenericTraceModel m = (GenericTraceModel) traceModel;
+			List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
+
+			for (EObject trace : m.getTraces()) {
+				for (TraceLinkAdapter traceLinkAdapter : traceLinkAdapters) {
+					if (traceLinkAdapter.canAdapt(trace)) {
+						if (traceLinkAdapter.getSources(trace).contains(source)
+								&& traceLinkAdapter.getTargets(trace).contains(target)) {
+							resultTraces.add(trace);
+						}
+					}
 				}
 			}
 		}
-		return connections;
-	}
 
-	private List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel,
-			List<Object> accumulator) {
-		List<Connection> directElements = getConnectedElements(element, traceModel);
-		List<Connection> allElements = new ArrayList<>();
-
-		directElements.forEach(connection -> {
-			if (!accumulator.contains(connection.getTlink())) {
-				allElements.add(connection);
-				accumulator.add(connection.getTlink());
-				connection.getTargets().forEach(e -> {
-					allElements.addAll(getTransitivelyConnectedElements(e, traceModel, accumulator));
-				});
-			}
-		});
-
-		return allElements;
+		return resultTraces;
 	}
 
 	@Override
-	public List<Connection> getTransitivelyConnectedElements(EObject element, EObject traceModel) {
-		List<Object> accumulator = new ArrayList<>();
-		return getTransitivelyConnectedElements(element, traceModel, accumulator);
+	public List<EObject> getTracesFromSource(EObject source, EObject traceModel) {
+		List<EObject> resultTraces = new ArrayList<>();
+		if (traceModel instanceof GenericTraceModel) {
+			GenericTraceModel m = (GenericTraceModel) traceModel;
+			List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
+
+			for (EObject trace : m.getTraces()) {
+				for (TraceLinkAdapter traceLinkAdapter : traceLinkAdapters) {
+					if (traceLinkAdapter.canAdapt(trace)) {
+						if (traceLinkAdapter.getSources(trace).contains(source)) {
+							resultTraces.add(trace);
+						}
+					}
+				}
+			}
+		}
+
+		return resultTraces;
+	}
+
+	@Override
+	public List<EObject> getTracesToTarget(EObject target, EObject traceModel) {
+		List<EObject> resultTraces = new ArrayList<>();
+		if (traceModel instanceof GenericTraceModel) {
+			GenericTraceModel m = (GenericTraceModel) traceModel;
+			List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
+
+			for (EObject trace : m.getTraces()) {
+				for (TraceLinkAdapter traceLinkAdapter : traceLinkAdapters) {
+					if (traceLinkAdapter.canAdapt(trace)) {
+						if (traceLinkAdapter.getTargets(trace).contains(target)) {
+							resultTraces.add(trace);
+						}
+					}
+				}
+			}
+		}
+
+		return resultTraces;
+	}
+
+	@Override
+	public void addTrace(EObject trace, EObject traceModel) {
+		GenericTraceModel genericTraceModel = (GenericTraceModel) traceModel;
+		genericTraceModel.getTraces().add(trace);
+	}
+
+	@Override
+	public void deleteTrace(EObject traceToDelete, EObject traceModel) {
+		GenericTraceModel genericTraceModel = (GenericTraceModel) traceModel;
+		genericTraceModel.getTraces().remove(traceToDelete);
+	}
+
+	@Override
+	public TraceLinkAdapter getTraceLinkAdapter(EObject trace) {
+		List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
+		for(TraceLinkAdapter adapter : traceLinkAdapters){
+			if (adapter.canAdapt(trace)){
+				return adapter;
+			}
+		}
+		return null;
 	}
 
 }

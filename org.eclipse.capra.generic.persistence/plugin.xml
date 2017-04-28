@@ -15,7 +15,13 @@
    <extension
          point="org.eclipse.capra.configuration.persistenceHandler">
       <persistenceHandler
-            class="org.eclipse.capra.generic.persistance.TracePersistenceAdapter">
+            class="org.eclipse.capra.generic.persistence.GenericTracePersistenceAdapter">
       </persistenceHandler>
+   </extension>
+   <extension
+         point="org.eclipse.capra.configuration.TraceLinkMetaModelAdapter">
+      <TraceLinkMetaModelAdapter
+            class="org.eclipse.capra.generic.persistence.GenericTraceLinkMetaModelAdapter">
+      </TraceLinkMetaModelAdapter>
    </extension>
 </plugin>

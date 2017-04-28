@@ -18,13 +18,10 @@ public class Util {
 	 *         structure of the parameter or an empty list if the paramter was
 	 *         not an {@link EObject}
 	 */
-	public static List<EObject> linearize(Object object) {
+	public static List<EObject> linearize(EObject object) {
 		ArrayList<EObject> elementList = new ArrayList<EObject>();
-		if (object instanceof EObject) {
-			EObject root = (EObject) object;
-			root.eAllContents().forEachRemaining(element -> elementList.add(element));
-			elementList.add(root);
-		}
+		object.eAllContents().forEachRemaining(element -> elementList.add(element));
+			elementList.add(object);
 		return elementList;
 	}
 

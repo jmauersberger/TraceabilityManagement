@@ -11,28 +11,19 @@
 
 package org.eclipse.capra.ui.notification;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelFactory;
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
-import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
-import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.PersistenceAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.ui.IMarkerResolution;
 
 /**
@@ -43,18 +34,13 @@ import org.eclipse.ui.IMarkerResolution;
  */
 public class DeleteQuickFix implements IMarkerResolution {
 
-	private URI artifactModelURI;
-	private URI traceModelURI;
-	private TracePersistenceAdapter tracePersistenceAdapter;
+	private PersistenceAdapter tracePersistenceAdapter;
 	private ResourceSet resourceSet;
-	private EObject awc;
+	private EObject artifactModel;
 	private String label;
-	private Resource resourceForArtifacts;
-	private Resource resourceForTraces;
-	private ArtifactWrapperContainer container;
 	private EObject traceModel;
-	private TraceMetaModelAdapter traceMetamodelAdapter;
-	private List<RelatedTo> toDelete = new ArrayList<>();
+	private TraceMetaModelAdapter traceModelAdapter;
+	private List<EObject> toDelete = new ArrayList<>();
 
 	DeleteQuickFix(String label) {
 		this.label = label;
@@ -67,65 +53,89 @@ public class DeleteQuickFix implements IMarkerResolution {
 
 	@Override
 	public void run(IMarker marker) {
-
-		resourceSet = new ResourceSetImpl();
-		tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		traceMetamodelAdapter = ExtensionPointHelper.getTraceMetamodelAdapter().get();
-		traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
-		traceModelURI = EcoreUtil.getURI(traceModel);
-		GenericTraceModel newTraceModel = GenericTraceMetaModelFactory.eINSTANCE.createGenericTraceModel();
-		resourceForTraces = resourceSet.createResource(traceModelURI);
-
-		GenericTraceModel simpleTM = (GenericTraceModel) traceModel;
-		List<RelatedTo> traces = simpleTM.getTraces();
-
-		awc = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
-		artifactModelURI = EcoreUtil.getURI(awc);
-
-		resourceForArtifacts = resourceSet.createResource(artifactModelURI);
-		EList<ArtifactWrapper> list = ((ArtifactWrapperContainer) awc).getArtifacts();
-		container = (ArtifactWrapperContainer) awc;
-		int counter = -1;
-		for (ArtifactWrapper aw : list) {
-			counter++;
-			try {
-				if (aw.getName().equals(marker.getAttribute("fileName"))) {
-					List<Connection> connections = traceMetamodelAdapter.getConnectedElements(aw, traceModel);
-					connections.forEach(c -> {
-						for (RelatedTo t : traces) {
-							if (c.getTlink().equals(t)) {
-								toDelete.add(t);
-							}
-						}
-					});
-					traces.removeAll(toDelete);
-					newTraceModel.getTraces().addAll(traces);
-					resourceForTraces.getContents().add(newTraceModel);
-
-					ArtifactWrapper toRemove = container.getArtifacts().get(counter);
-					EcoreUtil.delete(toRemove);
-					resourceForArtifacts.getContents().add(container);
-					try {
-						resourceForTraces.save(null);
-						resourceForArtifacts.save(null);
-					} catch (IOException e) {
-
-						e.printStackTrace();
-					}
-
-					break;
-				}
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
 		try {
-			marker.delete();
-		} catch (CoreException e) {
-
-			e.printStackTrace();
+		Object deletedFile = marker.getAttribute("fileName");
+		
+				resourceSet = new ResourceSetImpl();
+				tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+				traceModelAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
+				traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
+				artifactModel = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
+		
+				ArtifactMetaModelAdapter artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+		
+				List<EObject> wrappedArtifacts = artifactAdapter.getArtifacts(artifactModel);
+				int counter = -1;
+				for (EObject artifactWrapper : wrappedArtifacts) {
+					counter++;
+					
+					 ArtifactHandler artifactHandler = artifactAdapter.getArtifactHandler(artifactWrapper);
+					
+					
+					
+				}
+				
+				
+		} catch (Exception ex){
+			
 		}
 	}
+
+//	@Override
+//	public void run(IMarker marker) {
+//		Object deletedFile = marker.getAttribute("fileName");
+//
+//		resourceSet = new ResourceSetImpl();
+//		tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+//		traceModelAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
+//		traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
+//		artifactModel = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
+//
+//		ArtifactMetaModelAdapter artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+//
+//		List<EObject> wrappedArtifacts = artifactAdapter.getArtifacts(artifactModel);
+//
+//		int counter = -1;
+//		for (EObject artifactWrapper : wrappedArtifacts) {
+//			counter++;
+//			try {
+//				String artifactHandler = artifactAdapter.getArtifactHandler(artifactWrapper);
+//				if (artifactWrapper.getName().equals(marker.getAttribute("fileName"))) {
+//					traceModelAdapter.getTracesFromSource(source, artifactWrapper);
+//					traceModelAdapter.getTracesToTarget(target, artifactWrapper);
+//					
+//					List<EObject> connections = traceModelAdapter.getConnectedElements(artifactWrapper, newTraceModel);
+//					connections.forEach(c -> {
+//						for (RelatedTo t : traces) {
+//							if (c.getTlink().equals(t)) {
+//								toDelete.add(t);
+//							}
+//						}
+//					});
+//					traces.removeAll(toDelete);
+//					newTraceModel.getTraces().addAll(traces);
+//
+//					ArtifactWrapper toRemove = artifactModel.getArtifacts().get(counter);
+//					EcoreUtil.delete(toRemove);
+//					try {
+//						resourceForTraces.save(null);
+//						resourceForArtifacts.save(null);
+//					} catch (IOException e) {
+//
+//						e.printStackTrace();
+//					}
+//
+//					break;
+//				}
+//			} catch (CoreException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		try {
+//			marker.delete();
+//		} catch (CoreException e) {
+//			e.printStackTrace();
+//		}
+//	}
 }

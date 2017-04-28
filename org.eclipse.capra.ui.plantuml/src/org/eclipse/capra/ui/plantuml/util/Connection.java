@@ -8,10 +8,9 @@
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.capra.core.adapters;
+package org.eclipse.capra.ui.plantuml.util;
 
-import java.util.List;
-
+import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -22,25 +21,25 @@ import org.eclipse.emf.ecore.EObject;
  * @author Anthony Anjorin, Salome Maro
  */
 public class Connection {
-	private EObject origin;
-	private List<EObject> targets;
-	private EObject tlink;
+	private EObject source;
+	private EObject target;
+	private String linkType;
 
-	public Connection(EObject origin, List<EObject> targets, EObject tlink) {
-		this.origin = origin;
-		this.targets = targets;
-		this.tlink = tlink;
+	public Connection(EObject source, EObject target, String linkType) {
+		this.source = source;
+		this.target = target;
+		this.linkType = linkType;
 	}
 
-	public EObject getOrigin() {
-		return origin;
+	public EObject getTarget() {
+		return target;
 	}
 
-	public List<EObject> getTargets() {
-		return targets;
+	public EObject getSource() {
+		return source;
 	}
 
-	public EObject getTlink() {
-		return tlink;
+	public String getLinkType() {
+		return linkType;
 	}
 }

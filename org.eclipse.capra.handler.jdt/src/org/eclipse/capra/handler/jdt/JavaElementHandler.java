@@ -12,7 +12,7 @@ package org.eclipse.capra.handler.jdt;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
@@ -34,7 +34,7 @@ public class JavaElementHandler extends AbstractArtifactHandler {
 
 	@Override
 	public IJavaElement resolveArtifact(EObject artifact) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
 		String uri = adapter.getArtifactUri(artifact);
 		return JavaCore.create(uri);
 	}

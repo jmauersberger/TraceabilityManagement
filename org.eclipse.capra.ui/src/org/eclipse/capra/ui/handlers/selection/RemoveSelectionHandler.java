@@ -12,7 +12,7 @@ package org.eclipse.capra.ui.handlers.selection;
 
 import java.util.List;
 
-import org.eclipse.capra.ui.helpers.TraceCreationHelper;
+import org.eclipse.capra.ui.helpers.SelectionHelper;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -27,7 +27,7 @@ public class RemoveSelectionHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		List<Object> selection = TraceCreationHelper.extractSelectedElements(event);
+		List<Object> selection = SelectionHelper.extractSelectedElements(event);
 		SelectionView.getOpenedView().removeFromSelection(selection);
 		return null;
 	}

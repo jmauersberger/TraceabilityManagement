@@ -12,7 +12,7 @@ package org.eclipse.capra.handler.cdt;
 
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICElement;
 import org.eclipse.emf.ecore.EObject;
@@ -30,7 +30,7 @@ public class CDTHandler extends AbstractArtifactHandler {
 
 	@Override
 	public ICElement resolveArtifact(EObject artifact) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointHelper.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
 		String uri = adapter.getArtifactUri(artifact);
 		return CoreModel.create(uri);
 	}

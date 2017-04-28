@@ -11,8 +11,9 @@
 package org.eclipse.capra.handler.papyrus;
 
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
-import org.eclipse.capra.core.helpers.EMFHelper;
+import org.eclipse.capra.core.util.UIStringUtil;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.TreeElement;
 
 /**
@@ -36,6 +37,17 @@ public class PapyrusHandler extends AbstractArtifactHandler {
 	@Override
 	public String getName(Object selection) {
 		EObject eObject = EObject.class.cast(selection);
-		return EMFHelper.createUIString(eObject);
+		return UIStringUtil.createUIString(eObject);
+	}
+
+	@Override
+	public String getURI(Object selection) {
+		EObject eObject = EObject.class.cast(selection);
+		return EcoreUtil.getURI(eObject).toString();
+	}
+
+	@Override
+	public Object resolveArtifact(EObject artifact) {
+		return artifact;
 	}
 }

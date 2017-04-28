@@ -8,12 +8,13 @@
  *   Contributors:
  *      Chalmers | University of Gothenburg and rt-labs - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.capra.core.helpers;
+package org.eclipse.capra.core.util;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 
@@ -21,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  * Contains methods to work with {@link EObject} instances encountered when
  * handling EMF models.
  */
-public class EMFHelper {
+public class UIStringUtil {
 
 	/**
 	 * Builds an identifier String for the given EObject. This identifier starts
@@ -47,32 +48,28 @@ public class EMFHelper {
 
 		boolean success = false;
 
-		List<EAttribute> attributes = eObject.eClass().getEAllAttributes();
 		StringBuilder identifier = new StringBuilder();
 
-		success = tryGetSingleAttribute(eObject, attributes, identifier);
+		success = tryGetSingleAttribute(eObject, identifier);
 
 		if (!success)
-			success = tryGetNameAttribute(eObject, attributes, identifier);
+			success = tryGetNameAttribute(eObject, identifier);
 
 		if (!success)
-			success = tryGetAnyAttribute(eObject, attributes, identifier);
+			success = tryGetAnyAttribute(eObject, identifier);
 
 		if (success)
 			identifier.append(" : ");
 
 		boolean customHandlerName = false;
-		Collection<ArtifactHandler> artifactHandlers = ExtensionPointHelper.getArtifactHandlers();
-		for (ArtifactHandler handler : artifactHandlers) {
-			Object obj = handler.resolveArtifact(eObject);
-			if (obj != null && handler.canHandleSelection(obj)) {
-				if (handler.getObjectTypeName(obj) != null) {
-					identifier.append(handler.getObjectTypeName(obj));
-					customHandlerName = true;
-					break;
-				}
-
-			}
+		Optional<ArtifactMetaModelAdapter> optional = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
+		if (optional.isPresent()) {
+			ArtifactMetaModelAdapter adapter = optional.get();
+			ArtifactHandler artifactHandler = adapter.getArtifactHandler(eObject);
+			Object resolvedArtifact = artifactHandler.resolveArtifact(eObject);
+			String objectTypeName = artifactHandler.getObjectTypeName(resolvedArtifact);
+			identifier.append(objectTypeName);
+			customHandlerName = true;
 		}
 
 		if (!customHandlerName) {
@@ -90,11 +87,11 @@ public class EMFHelper {
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
-	private static boolean tryGetSingleAttribute(final EObject eObject, final List<EAttribute> attributes,
-			final StringBuilder name) {
+	private static boolean tryGetSingleAttribute(final EObject eObject, final StringBuilder name) {
 		boolean success = false;
-		if (attributes.size() == 1) {
-			Object obj = eObject.eGet(attributes.get(0));
+		EList<EAttribute> allAttributes = eObject.eClass().getEAllAttributes();
+		if (allAttributes.size() == 1) {
+			Object obj = eObject.eGet(allAttributes.get(0));
 			if (obj != null) {
 				name.append(obj.toString());
 				success = true;
@@ -111,10 +108,9 @@ public class EMFHelper {
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
-	private static boolean tryGetNameAttribute(final EObject eObject, final List<EAttribute> attributes,
-			final StringBuilder name) {
+	private static boolean tryGetNameAttribute(final EObject eObject, final StringBuilder name) {
 		boolean success = false;
-		for (EAttribute feature : attributes) {
+		for (EAttribute feature : eObject.eClass().getEAllAttributes()) {
 			if (feature.getName().equals("name")) {
 				Object obj = eObject.eGet(feature);
 				if (obj != null) {
@@ -135,12 +131,11 @@ public class EMFHelper {
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
-	private static boolean tryGetAnyAttribute(final EObject eObject, final List<EAttribute> attributes,
-			final StringBuilder name) {
+	private static boolean tryGetAnyAttribute(final EObject eObject, final StringBuilder name) {
 		boolean success = false;
 		String nonStringName = null;
 		String stringName = null;
-		for (EAttribute feature : attributes) {
+		for (EAttribute feature : eObject.eClass().getEAllAttributes()) {
 			Object obj = eObject.eGet(feature);
 			if (obj == null)
 				continue;

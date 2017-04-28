@@ -24,25 +24,36 @@
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated generictrace -->
       <package
             uri="org.eclipse.capra.GenericTraceMetaModel"
             class="org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage"
-            genModel="model/generictrace.xcore"/>
+            genModel="model/GenericTraceMetaModel.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated artifact -->
       <package
             uri="org.eclipse.capra.GenericArtifactMetaModel"
             class="org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelPackage"
-            genModel="model/artifact.xcore"/>
+            genModel="model/GenericArtifactMetaModel.genmodel"/>
    </extension>
    <extension
-         point="org.eclipse.capra.configuration.TraceabilityMetaModel">
-      <TraceabilityMetaModelAdapter
-            class="org.eclipse.capra.generic.tracemodels.GenericMetaModelAdapter">
-      </TraceabilityMetaModelAdapter>
+         point="org.eclipse.capra.configuration.TraceLinkMetaModelAdapter">
+      <TraceLinkMetaModelAdapter
+            class="org.eclipse.capra.generic.tracemodels.GenericTraceMetaModelAdapter">
+      </TraceLinkMetaModelAdapter>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="org.eclipse.capra.GenericTraceLinkMetaModel"
+            class="org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLinkMetaModelPackage"
+            genModel="model/GenericTraceLinkMetaModel.genmodel"/>
+   </extension>
+   <extension
+         point="org.eclipse.capra.configuration.TraceLinkAdapter">
+      <TraceLinkAdapter
+            class="org.eclipse.capra.generic.tracemodels.GenericTraceLinkAdapter">
+      </TraceLinkAdapter>
    </extension>
 
 </plugin>

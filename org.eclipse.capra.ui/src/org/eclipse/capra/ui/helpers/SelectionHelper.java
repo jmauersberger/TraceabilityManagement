@@ -13,6 +13,7 @@ package org.eclipse.capra.ui.helpers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -21,7 +22,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 /**
  * Contains supporting functionality required when creating trace links.
  */
-public class TraceCreationHelper {
+public class SelectionHelper {
 
 	/**
 	 * Extract selected elements from a selection event.
@@ -29,10 +30,18 @@ public class TraceCreationHelper {
 	 * @param event
 	 *            This is the click event to create a trace
 	 * @return A list of all the selected elements
+	 * @throws CapraException
 	 */
 	public static List<Object> extractSelectedElements(ExecutionEvent event) {
-		ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
-		return extractSelectedElements(currentSelection);
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			ArrayList<Object> result = new ArrayList<>();
+			List<?> list = structuredSelection.toList();
+			result.addAll(list);
+			return result;
+		}
+		return new ArrayList<>();
 	}
 
 	/**
@@ -40,15 +49,16 @@ public class TraceCreationHelper {
 	 * 
 	 * @param selection
 	 * @return A list of all the selected elements
+	 * @throws CapraException
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<Object> extractSelectedElements(ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection sselection = (IStructuredSelection) selection;
-			return sselection.toList();
-		} else {
-			return new ArrayList<Object>();
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			ArrayList<Object> result = new ArrayList<>();
+			List<?> list = structuredSelection.toList();
+			result.addAll(list);
+			return result;
 		}
+		return new ArrayList<>();
 	}
-
 }

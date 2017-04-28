@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.capra.generic.tracemodels;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
 import org.eclipse.capra.GenericArtifactMetaModel.GenericArtifactMetaModelFactory;
@@ -30,10 +33,18 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 		return GenericArtifactMetaModelFactory.eINSTANCE.createArtifactWrapperContainer();
 	}
 
-	public EObject getArtifact(EObject artifactModel, String artifactHandler, String artifactUri) {
+	@Override
+	public List<EObject> getArtifacts(EObject artifactModel) {
+		ArtifactWrapperContainer container = (ArtifactWrapperContainer) artifactModel;
+		List<EObject> result = new ArrayList<>();
+		result.addAll(container.getArtifacts());
+		return result;
+	}
+
+	public EObject getArtifact(EObject artifactModel, String artifactUri) {
 		ArtifactWrapperContainer container = getContainer(artifactModel);
 		for (ArtifactWrapper artifact : container.getArtifacts()) {
-			if (getArtifactHandler(artifact).equals(artifactHandler) && getArtifactUri(artifact).equals(artifactUri))
+			if (getArtifactUri(artifact).equals(artifactUri))
 				return artifact;
 		}
 		return null;
@@ -43,7 +54,7 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 	public EObject createArtifact(EObject artifactModel, String artifactHandler, String artifactUri,
 			String artifactName) {
 		ArtifactWrapperContainer container = getContainer(artifactModel);
-		EObject existingWrapper = getArtifact(artifactModel, artifactHandler, artifactUri);
+		EObject existingWrapper = getArtifact(artifactModel, artifactUri);
 		if (existingWrapper != null)
 			return existingWrapper;
 
@@ -54,15 +65,6 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 		container.getArtifacts().add(wrapper);
 
 		return wrapper;
-	}
-
-	@Override
-	public String getArtifactHandler(EObject artifact) {
-		if (artifact instanceof ArtifactWrapper) {
-			ArtifactWrapper wrapper = (ArtifactWrapper) artifact;
-			return wrapper.getArtifactHandler();
-		}
-		return null;
 	}
 
 	@Override
@@ -82,5 +84,4 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 		}
 		return null;
 	}
-
 }

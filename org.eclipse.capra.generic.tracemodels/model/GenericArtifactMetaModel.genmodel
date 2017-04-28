@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.capra.generic.tracemodels/src-gen"
+    modelPluginID="org.eclipse.capra.generic.tracemodels" modelName="GenericArtifactMetaModel"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="8.0" copyrightFields="false" usedGenPackages="../../org.eclipse.emf.ecore/model/Ecore.genmodel#//ecore"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>GenericArtifactMetaModel.ecore</foreignModel>
+  <genPackages prefix="GenericArtifactMetaModel" basePackage="org.eclipse.capra" disposableProviderFactory="true"
+      ecorePackage="GenericArtifactMetaModel.ecore#/">
+    <genClasses ecoreClass="GenericArtifactMetaModel.ecore#//ArtifactWrapperContainer">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GenericArtifactMetaModel.ecore#//ArtifactWrapperContainer/artifacts"/>
+    </genClasses>
+    <genClasses ecoreClass="GenericArtifactMetaModel.ecore#//ArtifactWrapper">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GenericArtifactMetaModel.ecore#//ArtifactWrapper/uri"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GenericArtifactMetaModel.ecore#//ArtifactWrapper/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GenericArtifactMetaModel.ecore#//ArtifactWrapper/ArtifactHandler"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

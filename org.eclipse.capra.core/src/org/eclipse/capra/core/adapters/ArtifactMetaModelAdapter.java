@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.capra.core.adapters;
 
+import java.util.List;
+
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.emf.ecore.EObject;
 
@@ -26,6 +28,8 @@ public interface ArtifactMetaModelAdapter {
 	 */
 	EObject createModel();
 
+	List<EObject> getArtifacts(EObject artifactModel);
+	
 	/**
 	 * Create a new artifact. The list of artifacts is searched for an existing
 	 * artifact with the same handler and uri. If found, the existing artifact
@@ -50,7 +54,7 @@ public interface ArtifactMetaModelAdapter {
 	 *            Uri of artifact
 	 * @return artifact if found, null otherwise
 	 */
-	EObject getArtifact(EObject artifactModel, String artifactHandler, String artifactUri);
+	EObject getArtifact(EObject artifactModel, String artifactUri);
 
 	/**
 	 * Get a handler for the given artifact
@@ -58,7 +62,7 @@ public interface ArtifactMetaModelAdapter {
 	 * @param artifact
 	 * @return artifact handler
 	 */
-	String getArtifactHandler(EObject artifact);
+//	String getArtifactHandlerName(EObject artifact);
 
 	/**
 	 * Get the name of the given artifact.
@@ -82,6 +86,5 @@ public interface ArtifactMetaModelAdapter {
 	 * @param artifact
 	 * @return artifact handler instance
 	 */
-	ArtifactHandler getArtifactHandlerInstance(EObject artifact);
-
+	ArtifactHandler getArtifactHandler(EObject artifact);
 }

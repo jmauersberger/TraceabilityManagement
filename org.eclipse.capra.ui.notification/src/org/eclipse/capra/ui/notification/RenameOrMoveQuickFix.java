@@ -14,8 +14,8 @@ import java.io.IOException;
 
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapperContainer;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.adapters.PersistenceAdapter;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.EList;
@@ -51,50 +51,50 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 	@Override
 	public void run(IMarker marker) {
 		URI uri;
-		TracePersistenceAdapter tracePersistenceAdapter;
+		PersistenceAdapter tracePersistenceAdapter;
 		ResourceSet resourceSet;
 		EObject awc;
 		Resource resourceForArtifacts;
-		ArtifactWrapperContainer container;
-
-		String movedToPath = null;
-		String oldFileName = null;
-		String newFileName = null;
-
-		try {
-			movedToPath = (String) marker.getAttribute("DeltaMovedToPath");
-			oldFileName = (String) marker.getAttribute("oldFileName");
-			newFileName = (String) marker.getAttribute("newFileName");
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-
-		resourceSet = new ResourceSetImpl();
-		tracePersistenceAdapter = ExtensionPointHelper.getTracePersistenceAdapter().get();
-		awc = tracePersistenceAdapter.getArtifactWrappers(resourceSet);
-		uri = EcoreUtil.getURI(awc);
-		resourceForArtifacts = resourceSet.createResource(uri);
-		EList<ArtifactWrapper> list = ((ArtifactWrapperContainer) awc).getArtifacts();
-		container = (ArtifactWrapperContainer) awc;
-		for (ArtifactWrapper aw : list) {
-			if (aw.getName().equals(oldFileName)) {
-				aw.setName(newFileName);
-				aw.setUri(movedToPath);
-			}
-		}
-
-		resourceForArtifacts.getContents().add(container);
-		try {
-			resourceForArtifacts.save(null);
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-		try {
-			marker.delete();
-		} catch (CoreException e) {
-
-			e.printStackTrace();
-		}
+//		ArtifactWrapperContainer container;
+//
+//		String movedToPath = null;
+//		String oldFileName = null;
+//		String newFileName = null;
+//
+//		try {
+//			movedToPath = (String) marker.getAttribute("DeltaMovedToPath");
+//			oldFileName = (String) marker.getAttribute("oldFileName");
+//			newFileName = (String) marker.getAttribute("newFileName");
+//		} catch (CoreException e) {
+//			e.printStackTrace();
+//		}
+//
+//		resourceSet = new ResourceSetImpl();
+//		tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+//		awc = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
+//		uri = EcoreUtil.getURI(awc);
+//		resourceForArtifacts = resourceSet.createResource(uri);
+//		EList<ArtifactWrapper> list = ((ArtifactWrapperContainer) awc).getArtifacts();
+//		container = (ArtifactWrapperContainer) awc;
+//		for (ArtifactWrapper aw : list) {
+//			if (aw.getName().equals(oldFileName)) {
+//				aw.setName(newFileName);
+//				aw.setUri(movedToPath);
+//			}
+//		}
+//
+//		resourceForArtifacts.getContents().add(container);
+//		try {
+//			resourceForArtifacts.save(null);
+//		} catch (IOException e) {
+//
+//			e.printStackTrace();
+//		}
+//		try {
+//			marker.delete();
+//		} catch (CoreException e) {
+//
+//			e.printStackTrace();
+//		}
 	}
 }
