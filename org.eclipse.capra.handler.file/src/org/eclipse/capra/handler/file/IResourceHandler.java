@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
-import org.eclipse.capra.core.helpers.ExtensionPointHelper;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -50,7 +50,7 @@ public class IResourceHandler extends AbstractArtifactHandler {
 
 	@Override
 	public Image getIcon(Object obj) {
-		List<Object> extensions = ExtensionPointHelper.getExtensions("org.eclipse.ui.navigator.navigatorContent",
+		List<Object> extensions = ExtensionPointUtil.getExtensions("org.eclipse.ui.navigator.navigatorContent",
 				"labelProvider");
 
 		for (Object ext : extensions) {
@@ -122,6 +122,6 @@ public class IResourceHandler extends AbstractArtifactHandler {
 				}
 			}
 		}
-		return super.resolveArtifact(artifact);
+		return null;
 	}
 }
