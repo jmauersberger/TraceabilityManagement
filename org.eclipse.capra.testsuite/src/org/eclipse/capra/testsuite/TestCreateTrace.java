@@ -16,7 +16,6 @@ import static org.eclipse.capra.testsuite.TestHelper.createEClassInEPackage;
 import static org.eclipse.capra.testsuite.TestHelper.createEcoreModel;
 import static org.eclipse.capra.testsuite.TestHelper.createJavaProjectWithASingleJavaClass;
 import static org.eclipse.capra.testsuite.TestHelper.createSimpleProject;
-import static org.eclipse.capra.testsuite.TestHelper.createTraceForCurrentSelectionOfType;
 import static org.eclipse.capra.testsuite.TestHelper.getProject;
 import static org.eclipse.capra.testsuite.TestHelper.load;
 import static org.eclipse.capra.testsuite.TestHelper.projectExists;
@@ -28,9 +27,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelPackage;
-import org.eclipse.capra.ui.views.SelectionView;
+import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLinkMetaModelPackage;
+import org.eclipse.capra.core.CapraException;
+import org.eclipse.capra.core.operations.CreateConnection;
 import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -78,15 +80,19 @@ public class TestCreateTrace {
 		assertEquals(_b.getName(), "modelB");
 		EClass _B = (EClass) _b.getEClassifier("B");
 
-		// Add them to the selection view
-		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
-		SelectionView.getOpenedView().dropToSelection(_A);
-		SelectionView.getOpenedView().dropToSelection(_B);
-		assertFalse(SelectionView.getOpenedView().getSelection().isEmpty());
-
 		// Create a trace via the selection view
 		assertFalse(thereIsATraceBetween(_A, _B));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		List<Object> sources = Collections.singletonList(_A);
+		List<Object> targets = Collections.singletonList(_B);
+
+		CreateConnection command;
+		try {
+			command = new CreateConnection(sources, targets,
+					"Generic Trace");
+			command.execute();
+		} catch (CapraException e) {
+			e.printStackTrace();
+		}
 
 		// Check if trace has been created
 		assertTrue(thereIsATraceBetween(_A, _B));
@@ -111,16 +117,17 @@ public class TestCreateTrace {
 		assertEquals(_a.getName(), "modelA");
 		EClass _A = (EClass) _a.getEClassifier("A");
 
-		// Drop the EClass in the selection view
-		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
-		SelectionView.getOpenedView().dropToSelection(_A);
+		List<Object> sources = Collections.singletonList(_A);
+		List<Object> targets = Collections.singletonList(javaClass);
 
-		// Drop the JavaClass in the selection view
-		SelectionView.getOpenedView().dropToSelection(javaClass);
-
-		// Create a trace via the selection view
-		assertFalse(thereIsATraceBetween(_A, javaClass));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+		CreateConnection command;
+		try {
+			command = new CreateConnection(sources, targets,
+					GenericTraceLinkMetaModelPackage.eINSTANCE.getGenericTraceLink().getName());
+			command.execute();
+		} catch (CapraException e) {
+			e.printStackTrace();
+		}
 
 		// Check if trace has been created
 		assertTrue(thereIsATraceBetween(_A, javaClass));
@@ -145,16 +152,20 @@ public class TestCreateTrace {
 		assertEquals(_a.getName(), "modelA");
 		EClass _A = (EClass) _a.getEClassifier("A");
 
-		// Drop the EClass in the selection view
-		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
-		SelectionView.getOpenedView().dropToSelection(_A);
-
-		// Drop the c File in the selection view
-		SelectionView.getOpenedView().dropToSelection(cFile);
-
 		// Create a trace via the selection view
 		assertFalse(thereIsATraceBetween(_A, cFile));
-		createTraceForCurrentSelectionOfType(GenericTraceMetaModelPackage.eINSTANCE.getRelatedTo());
+
+		List<Object> sources = Collections.singletonList(_A);
+		List<Object> targets = Collections.singletonList(cFile);
+
+		CreateConnection command;
+		try {
+			command = new CreateConnection(sources, targets,
+					GenericTraceLinkMetaModelPackage.eINSTANCE.getGenericTraceLink().getName());
+			command.execute();
+		} catch (CapraException e) {
+			e.printStackTrace();
+		}
 
 		// Check if trace has been created
 		assertTrue(thereIsATraceBetween(_A, cFile));

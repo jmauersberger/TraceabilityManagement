@@ -78,8 +78,10 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 		PersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
 
+		// TODO: Traces need to be in the same resource set as the selected
+		// objects.
 		ResourceSet resourceSet = new ResourceSetImpl();
-		if (eobjs.get(0).eResource().getResourceSet() != null) {
+		if (eobjs.get(0).eResource() != null) {
 			resourceSet = eobjs.get(0).eResource().getResourceSet();
 		}
 

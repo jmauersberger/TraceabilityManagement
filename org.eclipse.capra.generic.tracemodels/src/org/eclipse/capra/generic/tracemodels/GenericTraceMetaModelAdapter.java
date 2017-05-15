@@ -20,6 +20,8 @@ import org.eclipse.capra.core.adapters.TraceLinkAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.util.EcoreUtil.EqualityHelper;
 
 /**
  * Provides generic functionality to deal with traceability meta models.
@@ -44,17 +46,32 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 	@Override
 	public List<EObject> getTracesBetween(EObject source, EObject target, EObject traceModel) {
 		List<EObject> resultTraces = new ArrayList<>();
+
+		EcoreUtil.EqualityHelper helper = new EqualityHelper();
 		if (traceModel instanceof GenericTraceModel) {
 			GenericTraceModel m = (GenericTraceModel) traceModel;
 			List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
 
 			for (EObject trace : m.getTraces()) {
 				for (TraceLinkAdapter traceLinkAdapter : traceLinkAdapters) {
-					if (traceLinkAdapter.canAdapt(trace)) {
-						if (traceLinkAdapter.getSources(trace).contains(source)
-								&& traceLinkAdapter.getTargets(trace).contains(target)) {
-							resultTraces.add(trace);
+					if (traceLinkAdapter.canAdapt(trace.eClass())) {
+						for (EObject traceSource : traceLinkAdapter.getSources(trace)) {
+							if (helper.equals(traceSource, source)) {
+								for (EObject traceTarget : traceLinkAdapter.getTargets(trace)) {
+									if (helper.equals(traceTarget, target)) {
+										resultTraces.add(trace);
+									}
+								}
+							}
 						}
+
+						// if
+						// (traceLinkAdapter.getSources(trace).contains(source)
+						// &&
+						// traceLinkAdapter.getTargets(trace).contains(target))
+						// {
+						// resultTraces.add(trace);
+						// }
 					}
 				}
 			}
@@ -72,7 +89,7 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 
 			for (EObject trace : m.getTraces()) {
 				for (TraceLinkAdapter traceLinkAdapter : traceLinkAdapters) {
-					if (traceLinkAdapter.canAdapt(trace)) {
+					if (traceLinkAdapter.canAdapt(trace.eClass())) {
 						if (traceLinkAdapter.getSources(trace).contains(source)) {
 							resultTraces.add(trace);
 						}
@@ -93,7 +110,7 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 
 			for (EObject trace : m.getTraces()) {
 				for (TraceLinkAdapter traceLinkAdapter : traceLinkAdapters) {
-					if (traceLinkAdapter.canAdapt(trace)) {
+					if (traceLinkAdapter.canAdapt(trace.eClass())) {
 						if (traceLinkAdapter.getTargets(trace).contains(target)) {
 							resultTraces.add(trace);
 						}
@@ -120,8 +137,8 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 	@Override
 	public TraceLinkAdapter getTraceLinkAdapter(EObject trace) {
 		List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
-		for(TraceLinkAdapter adapter : traceLinkAdapters){
-			if (adapter.canAdapt(trace)){
+		for (TraceLinkAdapter adapter : traceLinkAdapters) {
+			if (adapter.canAdapt(trace.eClass())) {
 				return adapter;
 			}
 		}

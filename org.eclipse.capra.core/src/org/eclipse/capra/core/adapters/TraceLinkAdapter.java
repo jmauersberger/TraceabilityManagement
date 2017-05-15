@@ -2,10 +2,11 @@ package org.eclipse.capra.core.adapters;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
 public interface TraceLinkAdapter {
-	boolean canAdapt(EObject trace);
+	boolean canAdapt(EClass traceType);
 
 	List<EObject> getSources(EObject trace);
 

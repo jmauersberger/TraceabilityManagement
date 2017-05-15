@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink;
 import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLinkMetaModelFactory;
+import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLinkMetaModelPackage;
 import org.eclipse.capra.core.adapters.TraceLinkAdapter;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -14,8 +16,8 @@ import org.eclipse.emf.ecore.EObject;
  */
 public class GenericTraceLinkAdapter implements TraceLinkAdapter {
 	@Override
-	public boolean canAdapt(EObject trace) {
-		if (trace instanceof GenericTraceLink) {
+	public boolean canAdapt(EClass traceType) {
+		if (traceType.equals(GenericTraceLinkMetaModelPackage.eINSTANCE.getGenericTraceLink())) {
 			return true;
 		}
 		return false;

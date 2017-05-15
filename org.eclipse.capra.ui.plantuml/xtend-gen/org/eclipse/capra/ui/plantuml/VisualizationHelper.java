@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.capra.core.util.UIStringUtil;
@@ -21,6 +22,7 @@ public class VisualizationHelper {
 		{
 			Optional<TraceMetaModelAdapter> _traceMetamodelAdapter = ExtensionPointUtil.getTraceMetamodelAdapter();
 			final TraceMetaModelAdapter traceAdapter = _traceMetamodelAdapter.get();
+			
 			StringConcatenation _builder = new StringConcatenation();
 			_builder.append("@startuml");
 			_builder.newLine();

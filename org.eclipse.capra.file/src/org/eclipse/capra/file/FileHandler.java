@@ -55,7 +55,16 @@ public class FileHandler extends AbstractArtifactHandler {
 			String[] strings = (String[]) obj;
 			if (strings.length > 0) {
 				File file = new File(strings[0]);
-				return file.exists();
+				if (file.exists()){
+					return true;
+				} else {
+					for (File root : File.listRoots()) {
+						if (file.equals(root)){
+							return true;
+						}
+					}
+				}
+				return false;
 			}
 		}
 		return false;

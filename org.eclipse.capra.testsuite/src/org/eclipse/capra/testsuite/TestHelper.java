@@ -15,19 +15,14 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
-import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
-import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
-import org.eclipse.capra.GenericTraceMetaModel.RelatedTo;
-import org.eclipse.capra.core.adapters.Connection;
+import org.eclipse.capra.core.CapraException;
+import org.eclipse.capra.core.adapters.PersistenceAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.adapters.TracePersistenceAdapter;
+import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
-import org.eclipse.capra.handler.cdt.CDTHandler;
-import org.eclipse.capra.handler.jdt.JavaElementHandler;
-import org.eclipse.capra.ui.handlers.TraceCreationHandler;
 import org.eclipse.capra.ui.plantuml.DisplayTracesHandler;
 import org.eclipse.capra.ui.views.SelectionView;
 import org.eclipse.cdt.core.CCorePlugin;
@@ -64,9 +59,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.LibraryLocation;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-
 
 public class TestHelper {
 
@@ -94,7 +86,9 @@ public class TestHelper {
 		// Create as Java project and set up build path etc.
 		IJavaProject javaProject = JavaCore.create(project);
 		IFolder binFolder = project.getFolder("bin");
-		binFolder.create(false, true, null);
+		if (!binFolder.exists()) {
+			binFolder.create(false, true, null);
+		}
 		javaProject.setOutputLocation(binFolder.getFullPath(), null);
 		List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
 		IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
@@ -166,83 +160,43 @@ public class TestHelper {
 		return (EPackage) rs.getResource(path, true).getContents().get(0);
 	}
 
-	public static void createTraceForCurrentSelectionOfType(EClass traceType) {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		TraceCreationHandler handler = new TraceCreationHandler();
-		handler.createTrace(window, (traceTypes, selection)
-		-> {
-			if (traceTypes.contains(traceType))
-				return Optional.of(traceType);
-			else
-				return Optional.empty();
-		});
-	}
+	public static boolean thereIsATraceBetween(Object a, Object b) {
+		ResourceSet resourceSet = new ResourceSetImpl();
+		Collection<ArtifactHandler> artifactHandlers = ExtensionPointUtil.getArtifactHandlers();
+		PersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+		EObject artifactModel = null;
+		EObject traceModel = null;
+		try {
+			artifactModel = persistenceAdapter.getArtifactWrapperModel(resourceSet);
+			traceModel = persistenceAdapter.getTraceModel(resourceSet);
+		} catch (CapraException e) {
+			e.printStackTrace();
+		}
 
-	public static boolean thereIsATraceBetween(EObject a, EObject b) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
-		TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
-		return traceAdapter.existsTraceBetween(a, b,
-				persistenceAdapter.getTraceModel(a.eResource().getResourceSet()));
-	}
-
-	public static boolean thereIsATraceBetween(EObject a, IType b) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
 
+		EObject aEObj = null;
+		EObject bEObj = null;
 
-		List<Connection> connected = traceAdapter.getConnectedElements(a,
-				persistenceAdapter.getTraceModel(a.eResource().getResourceSet()));
-		
-		return connected.stream().filter(o -> {
-			List<EObject> objects = o.getTargets();
-			for(EObject obj:objects) {
-				if(obj instanceof ArtifactWrapper) {
-					ArtifactWrapper wrapper = (ArtifactWrapper) obj;
-					if ((wrapper.getArtifactHandler().equals(JavaElementHandler.class.getName()))) {
-						return (wrapper.getUri().equals(b.getHandleIdentifier()));
-					}
-				}
+		for (ArtifactHandler artifactHandler : artifactHandlers) {
+			if (artifactHandler.canHandleSelection(a)) {
+				aEObj = artifactHandler.getEObjectForSelection(a, artifactModel);
+				break;
 			}
+		}
 
-			return false;
-		}).findAny().isPresent();
-
-	}
-
-	public static boolean thereIsATraceBetween(EObject a, ICProject b) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
-		TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
-
-		List<Connection> connected = traceAdapter.getConnectedElements(a,
-				persistenceAdapter.getTraceModel(a.eResource().getResourceSet()));
-
-		return connected.stream().filter(o -> {
-			List<EObject> objects = o.getTargets();
-			for(EObject obj:objects) {
-				if(obj instanceof ArtifactWrapper) {
-					ArtifactWrapper wrapper = (ArtifactWrapper) obj;
-					if ((wrapper.getArtifactHandler().equals(CDTHandler.class.getName()))) {
-						return (wrapper.getUri().equals(b.getHandleIdentifier()));
-					}
-				}
+		for (ArtifactHandler artifactHandler : artifactHandlers) {
+			if (artifactHandler.canHandleSelection(b)) {
+				bEObj = artifactHandler.getEObjectForSelection(b, artifactModel);
+				break;
 			}
-			return false;
-		}).findAny().isPresent();
+		}
 
+		List<EObject> tracesBetween = traceAdapter.getTracesBetween(aEObj, bEObj, traceModel);
+
+		return !tracesBetween.isEmpty();
 	}
 
-	public static boolean thereIsATraceBetween(IResource r1, IResource r2) {
-		TracePersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
-		
-		EObject tracemodel = persistenceAdapter.getTraceModel(new ResourceSetImpl());
-		GenericTraceModel gtm = (GenericTraceModel) tracemodel;
-		
-		RelatedTo trace = gtm.getTraces().get(0);
-		
-		return trace.getItem().contains(r1) && trace.getItem().contains(r2);
-
-	}
-	
 	public static ICProject createCDTProject(String projectName) throws OperationCanceledException, CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
@@ -269,8 +223,8 @@ public class TestHelper {
 
 		return f;
 	}
-	
-	public static void resetSelectionView(){
+
+	public static void resetSelectionView() {
 		SelectionView.getOpenedView().clearSelection();
 		DisplayTracesHandler.setTraceViewTransitive(true);
 		assertTrue(SelectionView.getOpenedView().getSelection().isEmpty());
