@@ -1,20 +1,80 @@
 package org.eclipse.capra.ui.plantuml;
 
+import com.google.common.base.Objects;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.capra.ui.plantuml.Connections;
 import org.eclipse.capra.ui.plantuml.util.Connection;
+import org.eclipse.capra.ui.plantuml.util.EMFHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import org.eclipse.xtext.xbase.lib.Exceptions;
 
 @SuppressWarnings("all")
 public class VisualizationHelper {
   public static String createMatrix(final EObject traceModel, final Collection<EObject> firstElements, final Collection<EObject> secondElements) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe method or field EMFHelper is undefined"
-      + "\nThe method or field EMFHelper is undefined"
-      + "\ngetIdentifier cannot be resolved"
-      + "\ngetIdentifier cannot be resolved");
+    try {
+      String _xblockexpression = null;
+      {
+        final TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter();
+        StringConcatenation _builder = new StringConcatenation();
+        _builder.append("@startuml");
+        _builder.newLine();
+        _builder.append("salt");
+        _builder.newLine();
+        _builder.append("{#");
+        _builder.newLine();
+        {
+          boolean _notEquals = (!Objects.equal(firstElements, null));
+          if (_notEquals) {
+            _builder.append(".");
+            {
+              for(final EObject e : secondElements) {
+                _builder.append("|");
+                String _identifier = EMFHelper.getIdentifier(e);
+                _builder.append(_identifier);
+              }
+            }
+            _builder.newLineIfNotEmpty();
+            {
+              for(final EObject first : firstElements) {
+                String _identifier_1 = EMFHelper.getIdentifier(first);
+                _builder.append(_identifier_1);
+                _builder.append(" ");
+                {
+                  for(final EObject second : secondElements) {
+                    _builder.append("|");
+                    {
+                      boolean _isEmpty = traceAdapter.getTracesBetween(first, second, traceModel).isEmpty();
+                      if (_isEmpty) {
+                        _builder.append("X");
+                      } else {
+                        _builder.append(".");
+                      }
+                    }
+                  }
+                }
+                _builder.newLineIfNotEmpty();
+              }
+            }
+          } else {
+            _builder.append("Choose two containers to show a traceability matrix of their contents.");
+            _builder.newLine();
+          }
+        }
+        _builder.append("}");
+        _builder.newLine();
+        _builder.newLine();
+        _builder.append("@enduml");
+        _builder.newLine();
+        _xblockexpression = _builder.toString();
+      }
+      return _xblockexpression;
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
   }
   
   public static String createNeighboursView(final List<Connection> connections, final EObject selectedObject) {

@@ -2,9 +2,9 @@ package org.eclipse.capra.ui.plantuml
 
 import java.util.Collection
 import java.util.List
-import org.eclipse.capra.ui.plantuml.util.Connection
 import org.eclipse.capra.core.util.ExtensionPointUtil
-import org.eclipse.capra.ui.helpers.EMFHelper
+import org.eclipse.capra.ui.plantuml.util.Connection
+import org.eclipse.capra.ui.plantuml.util.EMFHelper
 import org.eclipse.emf.ecore.EObject
 
 class VisualizationHelper {
