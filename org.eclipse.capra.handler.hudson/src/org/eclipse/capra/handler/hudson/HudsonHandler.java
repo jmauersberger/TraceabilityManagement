@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.hudson;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
@@ -30,8 +31,8 @@ public class HudsonHandler extends AbstractArtifactHandler {
 	}
 
 	@Override
-	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+	public EObject getEObjectForSelection(Object selection, EObject artifactModel) throws CapraException {
+		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
 		if (selection instanceof TestElement) {
 			TestElement test = (TestElement) selection;
 

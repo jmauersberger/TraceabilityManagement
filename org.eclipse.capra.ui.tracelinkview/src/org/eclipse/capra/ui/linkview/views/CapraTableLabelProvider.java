@@ -1,5 +1,6 @@
 package org.eclipse.capra.ui.linkview.views;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -26,10 +27,26 @@ public class CapraTableLabelProvider extends LabelProvider implements ITableLabe
 	}
 
 	private String doGetText(ObjectWithHandler objWitHandler) {
-		return objWitHandler.handler.getName(objWitHandler.o);
+		String result = null;
+		try {
+			result = objWitHandler.handler.getName(objWitHandler.o);
+		} catch (CapraException e) {
+			e.printStackTrace();
+		}
+		if (result == null) {
+			result = "";
+		}
+
+		return result;
 	}
 
 	private Image doGetImage(ObjectWithHandler objWithHandler) {
-		return objWithHandler.handler.getIcon(objWithHandler.o);
+		Image result = null;
+		try {
+			return objWithHandler.handler.getIcon(objWithHandler.o);
+		} catch (CapraException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

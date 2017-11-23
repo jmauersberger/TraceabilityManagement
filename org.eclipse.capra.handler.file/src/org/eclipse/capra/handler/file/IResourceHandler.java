@@ -13,6 +13,7 @@ package org.eclipse.capra.handler.file;
 import java.util.List;
 
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.core.resources.IFile;
@@ -49,7 +50,7 @@ public class IResourceHandler extends AbstractArtifactHandler {
 	}
 
 	@Override
-	public Image getIcon(Object obj) {
+	public Image getIcon(Object obj) throws CapraException {
 		List<Object> extensions = ExtensionPointUtil.getExtensions("org.eclipse.ui.navigator.navigatorContent",
 				"labelProvider");
 
@@ -69,7 +70,7 @@ public class IResourceHandler extends AbstractArtifactHandler {
 	}
 
 	@Override
-	public String getObjectTypeName(Object obj) {
+	public String getObjectTypeName(Object obj) throws CapraException {
 		if (obj instanceof IFile) {
 			return "File";
 		} else if (obj instanceof IProject) {

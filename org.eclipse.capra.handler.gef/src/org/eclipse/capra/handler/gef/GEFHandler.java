@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.gef;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -35,7 +36,7 @@ public class GEFHandler extends AbstractArtifactHandler {
 	}
 
 	@Override
-	public String getName(Object selection) {
+	public String getName(Object selection) throws CapraException {
 		EditPart sel = (EditPart) selection;
 		EObject eObject = EMFHelper.getEObject(sel);
 		return org.eclipse.capra.core.util.UIStringUtil.createUIString(eObject);

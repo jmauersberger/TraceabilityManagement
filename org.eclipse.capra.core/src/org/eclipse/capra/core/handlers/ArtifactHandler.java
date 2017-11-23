@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.core.handlers;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.graphics.Image;
 
@@ -40,25 +41,27 @@ public interface ArtifactHandler {
 	 * 
 	 * @param selection
 	 * @return the name
+	 * @throws CapraException Something went wrong
 	 */
-	String getName(Object selection);
+	String getName(Object selection) throws CapraException;
 
 	/**
-	 * Gets the icon to be displayed together with the name of the selected
-	 * object.
+	 * Gets the icon to be displayed together with the name of the selected object.
 	 * 
 	 * @param selection
 	 * @return the image
+	 * @throws CapraException Something went wrong
 	 */
-	Image getIcon(Object selection);
+	Image getIcon(Object selection) throws CapraException;
 
 	/**
 	 * Gets the URI for the selected object.
 	 * 
 	 * @param selection
 	 * @return the URI as a string
+	 * @throws CapraException Something went wrong
 	 */
-	String getURI(Object selection);
+	String getURI(Object selection) throws CapraException;
 
 	/**
 	 * Map the object selection to an EObject.
@@ -66,9 +69,10 @@ public interface ArtifactHandler {
 	 * @param selection
 	 *            The object to be mapped
 	 * @param artifactModel
-	 * @return
+	 * @return the eobject for the selection
+	 * @throws CapraException Something went wrong
 	 */
-	EObject getEObjectForSelection(Object selection, EObject artifactModel);
+	EObject getEObjectForSelection(Object selection, EObject artifactModel) throws CapraException;
 
 	/**
 	 * Resolve the persisted EObject to the originally selected Object from the
@@ -78,8 +82,9 @@ public interface ArtifactHandler {
 	 * @param artifact
 	 *            The persisted EObject
 	 * @return originally selected object
+	 * @throws CapraException Something went wrong
 	 */
-	Object resolveArtifact(EObject artifact);
+	Object resolveArtifact(EObject artifact) throws CapraException;
 
 	/**
 	 * Gets the type name of the object.
@@ -87,6 +92,7 @@ public interface ArtifactHandler {
 	 * @param obj
 	 *            the object
 	 * @return the type name for the object
+	 * @throws CapraException Something went wrong
 	 */
-	String getObjectTypeName(Object obj);
+	String getObjectTypeName(Object obj) throws CapraException;
 }

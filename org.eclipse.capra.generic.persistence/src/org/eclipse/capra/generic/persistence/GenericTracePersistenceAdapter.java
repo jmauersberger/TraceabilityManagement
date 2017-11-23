@@ -13,6 +13,7 @@ package org.eclipse.capra.generic.persistence;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.adapters.PersistenceAdapter;
@@ -56,8 +57,8 @@ public class GenericTracePersistenceAdapter implements PersistenceAdapter {
 	}
 
 	@Override
-	public EObject getTraceModel(ResourceSet resourceSet) {
-		TraceMetaModelAdapter adapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
+	public EObject getTraceModel(ResourceSet resourceSet) throws CapraException {
+		TraceMetaModelAdapter adapter = ExtensionPointUtil.getTraceMetamodelAdapter();
 		return loadModel(DEFAULT_TRACE_MODEL_NAME, resourceSet).orElse(adapter.createModel());
 	}
 
@@ -103,8 +104,8 @@ public class GenericTracePersistenceAdapter implements PersistenceAdapter {
 	}
 
 	@Override
-	public EObject getArtifactWrapperModel(ResourceSet resourceSet) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+	public EObject getArtifactWrapperModel(ResourceSet resourceSet) throws CapraException {
+		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
 		Optional<EObject> model = loadModel(DEFAULT_ARTIFACT_WRAPPER_MODEL_NAME, resourceSet);
 		if (model.isPresent()) {
 			return model.get();

@@ -12,15 +12,14 @@ package org.eclipse.capra.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
+import org.eclipse.capra.core.adapters.PersistenceAdapter;
 import org.eclipse.capra.core.adapters.TraceLinkAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
-import org.eclipse.capra.core.adapters.PersistenceAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -51,13 +50,13 @@ public class ExtensionPointUtil {
 	 * 
 	 * @param ID
 	 *            the ID of the extension point
-	 * 
 	 * @param CONFIG
 	 *            the name of the attribute
-	 * 
 	 * @return List of extensions
+	 * @throws CapraException
+	 *             Something went wrong.
 	 */
-	public static List<Object> getExtensions(final String ID, final String CONFIG) {
+	public static List<Object> getExtensions(final String ID, final String CONFIG) throws CapraException {
 		List<Object> extensions = new ArrayList<>();
 
 		try {
@@ -72,9 +71,8 @@ public class ExtensionPointUtil {
 
 			return extensions;
 		} catch (Exception ex) {
+			throw new CapraException(ex);
 		}
-
-		return extensions;
 	}
 
 	/**
@@ -83,60 +81,65 @@ public class ExtensionPointUtil {
 	 * @param extensionID
 	 *            The ID of the extension
 	 * @return extension
+	 * @throws CapraException
+	 *             Something went wrong.
 	 */
-	public static Optional<ArtifactHandler> getExtension(String extensionID, String ID, String CONFIG) {
+	public static ArtifactHandler getExtension(String extensionID, String ID, String CONFIG) throws CapraException {
 		try {
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
 			IExtension extension = registry.getExtension(ID, extensionID);
 			IConfigurationElement[] elements = extension.getConfigurationElements();
-			return Optional.of((ArtifactHandler) elements[0].createExecutableExtension(CONFIG));
+			return (ArtifactHandler) elements[0].createExecutableExtension(CONFIG);
 		} catch (Exception e) {
-			return Optional.empty();
+			throw new CapraException(e);
 		}
 	}
 
 	/**
 	 * Gets the configured {@link TraceMetaModelAdapter}.
 	 * 
-	 * @return The configured {@code TraceMetaModelAdapter}. If none is
-	 *         configured, an empty instance of {@link Optional} is returned.
+	 * @return The configured {@code TraceMetaModelAdapter}
+	 * @throws CapraException
+	 *             Something went wrong
 	 */
-	public static Optional<TraceMetaModelAdapter> getTraceMetamodelAdapter() {
+	public static TraceMetaModelAdapter getTraceMetamodelAdapter() throws CapraException {
 		try {
 			Object extension = getExtensions(TRACE_ID, TRACE_CONFIG).get(0);
-			return Optional.of((TraceMetaModelAdapter) extension);
+			return (TraceMetaModelAdapter) extension;
 		} catch (Exception e) {
-			return Optional.empty();
+			throw new CapraException(e);
 		}
 	}
 
 	/**
 	 * Gets the configured {@link PersistenceAdapter}.
 	 * 
-	 * @return The configured {@code TracePersistenceAdapter}. If none is
-	 *         configured, an empty instance of {@link Optional} is returned.
+	 * @return The configured {@code TracePersistenceAdapter}
+	 * @throws CapraException
+	 *             Something went wrong.
 	 */
-	public static Optional<PersistenceAdapter> getTracePersistenceAdapter() {
+	public static PersistenceAdapter getTracePersistenceAdapter() throws CapraException {
 		try {
 			Object extension = getExtensions(PERSISTENCE_ID, PERSISTENCE_CONFIG).get(0);
-			return Optional.of((PersistenceAdapter) extension);
+			return (PersistenceAdapter) extension;
 		} catch (Exception e) {
-			return Optional.empty();
+			throw new CapraException(e);
 		}
 	}
 
 	/**
 	 * Gets the configured {@link ArtifactMetaModelAdapter}.
 	 * 
-	 * @return The configured {@code ArtifactMetaModelAdapter}. If none is
-	 *         configured, an empty instance of {@link Optional} is returned.
+	 * @return The configured {@code ArtifactMetaModelAdapter}
+	 * @throws CapraException
+	 *             Something went wrong.
 	 */
-	public static Optional<ArtifactMetaModelAdapter> getArtifactWrapperMetaModelAdapter() {
+	public static ArtifactMetaModelAdapter getArtifactWrapperMetaModelAdapter() throws CapraException {
 		try {
 			Object extension = getExtensions(ARTIFACT_ID, ARTIFACT_CONFIG).get(0);
-			return Optional.of((ArtifactMetaModelAdapter) extension);
+			return (ArtifactMetaModelAdapter) extension;
 		} catch (Exception e) {
-			return Optional.empty();
+			throw new CapraException(e);
 		}
 	}
 
@@ -144,15 +147,17 @@ public class ExtensionPointUtil {
 	 * Gets the available {@link ArtifactHandler} instances.
 	 * 
 	 * @return A collection of all the artifact handlers available. This method
-	 *         collects all plugins that have an extension to the
-	 *         ArtifactHandler Extension point
+	 *         collects all plugins that have an extension to the ArtifactHandler
+	 *         Extension point
+	 * @throws CapraException
+	 *             Something went wrong.
 	 */
-	public static Collection<ArtifactHandler> getArtifactHandlers() {
+	public static Collection<ArtifactHandler> getArtifactHandlers() throws CapraException {
 		try {
 			return getExtensions(ARTIFACT_HANDLER_ID, ARTIFACT_HANDLER_CONFIG).stream().map(ArtifactHandler.class::cast)
 					.collect(Collectors.toList());
 		} catch (Exception e) {
-			return Collections.<ArtifactHandler>emptyList();
+			throw new CapraException(e);
 		}
 	}
 
@@ -161,32 +166,39 @@ public class ExtensionPointUtil {
 	 * 
 	 * @param ID
 	 * @return ArtifactHandler
+	 * @throws CapraException
+	 *             Something went wrong.
 	 */
-	public static Optional<ArtifactHandler> getArtifactHandler(String ID) {
+	public static ArtifactHandler getArtifactHandler(String ID) throws CapraException {
 		return getExtension(ID, ARTIFACT_HANDLER_ID, ARTIFACT_CONFIG);
 	}
 
 	/**
 	 * Gets the configured {@link PriorityHandler}.
 	 * 
-	 * @return The configured {@code PriorityHandler}. If none is configured, an
-	 *         empty instance of {@link Optional} is returned.
+	 * @return The configured {@code PriorityHandler} or null
+	 * @throws CapraException
+	 *             Something went wrong.
 	 */
-	public static Optional<PriorityHandler> getPriorityHandler() {
-		try {
-			Object extension = getExtensions(PRIORITY_HANDLER_ID, PRIORITY_HANDLER_CONFIG).get(0);
-			return Optional.of((PriorityHandler) extension);
-		} catch (Exception e) {
-			return Optional.empty();
-		}
+	public static PriorityHandler getPriorityHandler() throws CapraException {
+		Object extension = getExtensions(PRIORITY_HANDLER_ID, PRIORITY_HANDLER_CONFIG).get(0);
+		return (PriorityHandler) extension;
 	}
 
-	public static List<TraceLinkAdapter> getTraceLinkAdapters() {
+	/**
+	 * Gets the available {@link TraceLinkAdapter} instances.
+	 * 
+	 * @return A collection of all the tracelink adapters available. This method
+	 *         collects all plugins that have an extension to the TraceLinkAdapter
+	 *         Extension point
+	 * @throws CapraException
+	 */
+	public static List<TraceLinkAdapter> getTraceLinkAdapters() throws CapraException {
 		try {
 			List<Object> extensions = getExtensions(TRACE_LINK_ID, TRACE__LINK_CONFIG);
 			return extensions.stream().map(obj -> (TraceLinkAdapter) obj).collect(Collectors.toList());
 		} catch (Exception e) {
-			return Collections.<TraceLinkAdapter>emptyList();
+			throw new CapraException(e);
 		}
 	}
 }

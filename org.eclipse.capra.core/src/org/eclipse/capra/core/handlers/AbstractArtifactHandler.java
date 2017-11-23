@@ -1,5 +1,6 @@
 package org.eclipse.capra.core.handlers;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -9,24 +10,24 @@ import org.eclipse.ui.PlatformUI;
 
 public abstract class AbstractArtifactHandler implements ArtifactHandler {
 	@Override
-	public EObject getEObjectForSelection(Object obj, EObject artifactModel) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+	public EObject getEObjectForSelection(Object obj, EObject artifactModel) throws CapraException {
+		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
 		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), getURI(obj), getName(obj));
 		return wrapper;
 	}
 
 	@Override
-	public String getName(Object obj) {
+	public String getName(Object obj) throws CapraException {
 		return obj.toString();
 	}
 
 	@Override
-	public Image getIcon(Object obj) {
+	public Image getIcon(Object obj) throws CapraException {
 		return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
 	}
 
 	@Override
-	public String getObjectTypeName(Object obj) {
+	public String getObjectTypeName(Object obj) throws CapraException {
 		Class<?>[] interfaces = obj.getClass().getInterfaces();
 		if (interfaces.length > 0) {
 			Class<?> interface1 = interfaces[0];

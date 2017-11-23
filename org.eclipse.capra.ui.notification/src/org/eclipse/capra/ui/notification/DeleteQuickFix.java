@@ -57,12 +57,12 @@ public class DeleteQuickFix implements IMarkerResolution {
 		Object deletedFile = marker.getAttribute("fileName");
 		
 				resourceSet = new ResourceSetImpl();
-				tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
-				traceModelAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
+				tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter();
+				traceModelAdapter = ExtensionPointUtil.getTraceMetamodelAdapter();
 				traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
 				artifactModel = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
 		
-				ArtifactMetaModelAdapter artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+				ArtifactMetaModelAdapter artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
 		
 				List<EObject> wrappedArtifacts = artifactAdapter.getArtifacts(artifactModel);
 				int counter = -1;

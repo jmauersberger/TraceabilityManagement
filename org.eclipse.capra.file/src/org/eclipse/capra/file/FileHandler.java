@@ -20,6 +20,7 @@ import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.filechooser.FileSystemView;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
@@ -35,11 +36,11 @@ import org.eclipse.swt.widgets.Display;
  */
 public class FileHandler extends AbstractArtifactHandler {
 	@Override
-	public EObject getEObjectForSelection(Object obj, EObject artifactModel) {
+	public EObject getEObjectForSelection(Object obj, EObject artifactModel) throws CapraException {
 		if (obj instanceof String[]) {
 			String[] strings = (String[]) obj;
 			if (strings.length > 0) {
-				ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+				ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
 				EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), getURI(obj),
 						getName(obj));
 				return wrapper;
@@ -99,7 +100,7 @@ public class FileHandler extends AbstractArtifactHandler {
 	}
 
 	@Override
-	public Image getIcon(Object obj) {
+	public Image getIcon(Object obj) throws CapraException {
 		if (obj instanceof String[]) {
 			String[] strings = (String[]) obj;
 			if (strings.length > 0) {
@@ -112,7 +113,7 @@ public class FileHandler extends AbstractArtifactHandler {
 	}
 
 	@Override
-	public String getObjectTypeName(Object obj) {
+	public String getObjectTypeName(Object obj) throws CapraException {
 		if (obj instanceof File) {
 			return "File";
 		}

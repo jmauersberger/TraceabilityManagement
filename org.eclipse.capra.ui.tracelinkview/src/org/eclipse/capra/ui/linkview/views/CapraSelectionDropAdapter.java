@@ -1,5 +1,7 @@
 package org.eclipse.capra.ui.linkview.views;
 
+import org.eclipse.capra.core.CapraException;
+import org.eclipse.capra.core.util.CapraExceptionUtil;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -13,7 +15,11 @@ class CapraSelectionDropAdapter extends ViewerDropAdapter {
 
 	@Override
 	public boolean performDrop(Object data) {
-		viewer.addToSelection(data);
+		try {
+			viewer.addToSelection(data);
+		} catch (CapraException e) {
+			CapraExceptionUtil.handleException(e, "Exception while DND operation");
+		}
 		return true;
 	}
 

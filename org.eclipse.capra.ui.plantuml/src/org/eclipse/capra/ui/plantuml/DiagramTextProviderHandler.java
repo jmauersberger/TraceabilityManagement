@@ -75,8 +75,8 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 		List<EObject> rowElements = null;
 		List<EObject> columnElements = null;
 
-		PersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
-		TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
+		PersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter();
+		TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter();
 
 		// TODO: Traces need to be in the same resource set as the selected
 		// objects.

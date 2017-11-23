@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.util.UIStringUtil;
 import org.eclipse.capra.ui.plantuml.util.Connection;
 import org.eclipse.emf.ecore.EObject;
@@ -55,7 +56,13 @@ public class Connections {
 		id2Label = new LinkedHashMap<>();
 		allObjects.forEach(o -> {
 			String id = object2Id.get(o);
-			String label = UIStringUtil.createUIString(o);
+			String label;
+			try {
+				label = UIStringUtil.createUIString(o);
+			} catch (CapraException e) {
+				label = "error while creating label";
+				e.printStackTrace();
+			}
 			id2Label.put(id, label);
 		});
 	}

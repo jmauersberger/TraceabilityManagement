@@ -1,7 +1,6 @@
 package org.eclipse.capra.ui.linkview.views;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.TraceLinkAdapter;
@@ -47,8 +46,9 @@ import org.eclipse.ui.part.ViewPart;
  * can be shared between views in order to ensure that objects of the same type
  * are presented in the same way everywhere.
  * <p>
+ * 
+ * @author Sascha Baumgart
  */
-
 public class TracelinkView extends ViewPart {
 
 	/**
@@ -62,14 +62,7 @@ public class TracelinkView extends ViewPart {
 	private Action clearViewersAction;
 
 	/**
-	 * The constructor.
-	 */
-	public TracelinkView() {
-	}
-
-	/**
-	 * This is a callback that will allow us to create the viewer and initialize
-	 * it.
+	 * This is a callback that will allow us to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(2, true));
@@ -88,7 +81,11 @@ public class TracelinkView extends ViewPart {
 		leftViewer.addChangeListener(new IChangeListener() {
 			@Override
 			public void handleChange() {
-				refreshAvailableLinkTypes();
+				try {
+					refreshAvailableLinkTypes();
+				} catch (CapraException e) {
+					CapraExceptionUtil.handleException(e, "Exception while refreshing link types");
+				}
 			}
 		});
 
@@ -97,7 +94,11 @@ public class TracelinkView extends ViewPart {
 		rightViewer.addChangeListener(new IChangeListener() {
 			@Override
 			public void handleChange() {
-				refreshAvailableLinkTypes();
+				try {
+					refreshAvailableLinkTypes();
+				} catch (CapraException e) {
+					CapraExceptionUtil.handleException(e, "Exception while refreshing link types");
+				}
 			}
 		});
 
@@ -110,28 +111,24 @@ public class TracelinkView extends ViewPart {
 		contributeToActionBars();
 	}
 
-	private void refreshAvailableLinkTypes() {
+	private void refreshAvailableLinkTypes() throws CapraException {
 		int oldSelectionIndex = linkTypeCombo.getSelectionIndex();
-		Optional<TraceMetaModelAdapter> optional = ExtensionPointUtil.getTraceMetamodelAdapter();
-		if (optional.isPresent()) {
-			TraceMetaModelAdapter tradeModelAdapter = optional.get();
+		TraceMetaModelAdapter tradeModelAdapter = ExtensionPointUtil.getTraceMetamodelAdapter();
 
-			List<EObject> leftWrappedEObjs;
-			List<EObject> rightWrappedEObjs;
-			try {
-				ResourceSetImpl resourceSetImpl = new ResourceSetImpl();
-				leftWrappedEObjs = ArtifactWrappingUtil.wrap(leftViewer.getObjects(), resourceSetImpl);
-				rightWrappedEObjs = ArtifactWrappingUtil.wrap(rightViewer.getObjects(), resourceSetImpl);
-				List<TraceLinkAdapter> traceTypes = tradeModelAdapter.getAvailableTraceTypes(leftWrappedEObjs,
-						rightWrappedEObjs);
-				linkTypeCombo.removeAll();
-				traceTypes.stream().map(traceLinkAdapter -> traceLinkAdapter.getLinkType()).sorted()
-						.forEach(name -> linkTypeCombo.add(name));
-			} catch (CapraException ex) {
-				Shell shell = getViewSite().getShell();
-				CapraExceptionUtil.handleException(shell, ex, "Error while Retrieving Trace Link Types");
-			}
-
+		List<EObject> leftWrappedEObjs;
+		List<EObject> rightWrappedEObjs;
+		try {
+			ResourceSetImpl resourceSetImpl = new ResourceSetImpl();
+			leftWrappedEObjs = ArtifactWrappingUtil.wrap(leftViewer.getObjects(), resourceSetImpl);
+			rightWrappedEObjs = ArtifactWrappingUtil.wrap(rightViewer.getObjects(), resourceSetImpl);
+			List<TraceLinkAdapter> traceTypes = tradeModelAdapter.getAvailableTraceTypes(leftWrappedEObjs,
+					rightWrappedEObjs);
+			linkTypeCombo.removeAll();
+			traceTypes.stream().map(traceLinkAdapter -> traceLinkAdapter.getLinkType()).sorted()
+					.forEach(name -> linkTypeCombo.add(name));
+		} catch (CapraException ex) {
+			Shell shell = getViewSite().getShell();
+			CapraExceptionUtil.handleException(ex, "Error while Retrieving Trace Link Types");
 		}
 
 		// TODO: Some other item with the same index in the combo could be
@@ -194,8 +191,7 @@ public class TracelinkView extends ViewPart {
 					CreateConnection createConnection = new CreateConnection(sources, targets, traceType);
 					createConnection.execute();
 				} catch (CapraException ex) {
-					Shell shell = TracelinkView.this.getViewSite().getShell();
-					CapraExceptionUtil.handleException(shell, ex, "Create Connection Failed");
+					CapraExceptionUtil.handleException(ex, "Create Connection Failed");
 				}
 
 			}

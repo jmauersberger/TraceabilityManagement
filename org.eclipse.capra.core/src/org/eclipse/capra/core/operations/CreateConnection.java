@@ -1,9 +1,9 @@
 package org.eclipse.capra.core.operations;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.capra.core.CapraException;
+import org.eclipse.capra.core.adapters.TraceLinkAdapter;
 import org.eclipse.capra.core.util.ArtifactWrappingUtil;
 import org.eclipse.emf.ecore.EObject;
 
@@ -26,12 +26,18 @@ public class CreateConnection extends AbstractCapraOperation {
 		List<EObject> wrappedSources = ArtifactWrappingUtil.wrap(sources, artifactHandlers, artifactModel);
 		List<EObject> wrappedTargets = ArtifactWrappingUtil.wrap(targets, artifactHandlers, artifactModel);
 
-		Optional<EObject> traceOpt = traceLinkMetaModelAdapters.stream()
-				.filter(adapter -> adapter.canCreateLink(wrappedSources, wrappedTargets))
-				.map(adapter -> adapter.createLink(traceType, wrappedSources, wrappedTargets)).findFirst();
+		EObject link = null;
+		for (TraceLinkAdapter adapter : traceLinkAdapter) {
+			if (adapter.getLinkType().equalsIgnoreCase(traceType)) {
+				if (adapter.canCreateLink(wrappedSources, wrappedTargets)) {
+					link = adapter.createLink(wrappedSources, wrappedTargets);
+					break;
+				}
+			}
+		}
 
-		if (traceOpt.isPresent()) {
-			traceMetaModelAdapter.addTrace(traceOpt.get(), traceModel);
+		if (link != null) {
+			traceMetaModelAdapter.addTrace(link, traceModel);
 			persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
 		} else {
 			throw new CapraException("Could not create the trace.");

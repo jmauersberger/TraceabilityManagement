@@ -2,6 +2,7 @@ package org.eclipse.capra.handler.emf;
 
 import java.util.List;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.core.resources.IFile;
@@ -41,7 +42,7 @@ public class XMIResourceHandler extends AbstractArtifactHandler {
 	}
 
 	@Override
-	public Image getIcon(Object obj) {
+	public Image getIcon(Object obj) throws CapraException {
 		List<Object> extensions = ExtensionPointUtil.getExtensions("org.eclipse.ui.navigator.navigatorContent",
 				"labelProvider");
 

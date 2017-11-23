@@ -12,7 +12,7 @@ import org.eclipse.emf.ecore.EObject;
 /**
  * This adapter provides access to GenericTraceLink traces.
  * 
- * @author baumgart
+ * @author Sascha Baumgart
  */
 public class GenericTraceLinkAdapter implements TraceLinkAdapter {
 	@Override
@@ -48,14 +48,10 @@ public class GenericTraceLinkAdapter implements TraceLinkAdapter {
 	}
 
 	@Override
-	public EObject createLink(String type, List<EObject> sources, List<EObject> targets) {
-		if (type.equals(getLinkType())) {
-			GenericTraceLink traceLink = GenericTraceLinkMetaModelFactory.eINSTANCE.createGenericTraceLink();
-			getSources(traceLink).addAll(sources);
-			getTargets(traceLink).addAll(targets);
-			return traceLink;
-		}
-
-		return null;
+	public EObject createLink(List<EObject> sources, List<EObject> targets) {
+		GenericTraceLink traceLink = GenericTraceLinkMetaModelFactory.eINSTANCE.createGenericTraceLink();
+		getSources(traceLink).addAll(sources);
+		getTargets(traceLink).addAll(targets);
+		return traceLink;
 	}
 }

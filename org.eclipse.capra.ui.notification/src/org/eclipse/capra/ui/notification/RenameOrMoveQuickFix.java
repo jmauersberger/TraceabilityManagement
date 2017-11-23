@@ -71,9 +71,9 @@ public class RenameOrMoveQuickFix implements IMarkerResolution {
 		}
 		try {
 			resourceSet = new ResourceSetImpl();
-			tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+			tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter();
 			artifactModel = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
-			artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+			artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
 			traceModel = tracePersistenceAdapter.getTraceModel(resourceSet);
 			uri = EcoreUtil.getURI(artifactModel);
 			resource = resourceSet.createResource(uri);

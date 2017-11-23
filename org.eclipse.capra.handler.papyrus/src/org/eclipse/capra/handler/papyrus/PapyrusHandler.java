@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.papyrus;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.util.UIStringUtil;
 import org.eclipse.emf.ecore.EObject;
@@ -35,7 +36,7 @@ public class PapyrusHandler extends AbstractArtifactHandler {
 	}
 
 	@Override
-	public String getName(Object selection) {
+	public String getName(Object selection) throws CapraException {
 		EObject eObject = EObject.class.cast(selection);
 		return UIStringUtil.createUIString(eObject);
 	}

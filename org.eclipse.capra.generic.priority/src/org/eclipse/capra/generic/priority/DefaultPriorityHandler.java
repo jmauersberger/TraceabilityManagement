@@ -14,9 +14,10 @@ import java.util.Collection;
 
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
-import org.eclipse.capra.handler.hudson.HudsonHandler;
-import org.eclipse.mylyn.builds.internal.core.BuildElement;
-import org.eclipse.mylyn.builds.internal.core.TestElement;
+
+//import org.eclipse.capra.core.handlers.ArtifactHandler;
+//import org.eclipse.capra.core.handlers.PriorityHandler;
+//import org.eclipse.capra.handler.hudson.HudsonHandler;
 
 /**
  * Provides a simple default policy for selecting an {@link ArtifactHandler} in
@@ -27,10 +28,12 @@ public class DefaultPriorityHandler implements PriorityHandler {
 
 	@Override
 	public ArtifactHandler getSelectedHandler(Collection<ArtifactHandler> handlers, Object selectedElement) {
-		if (selectedElement instanceof TestElement || selectedElement instanceof BuildElement) {
-			return handlers.stream().filter(h -> h instanceof HudsonHandler).findAny().get();
-
-		}
+		// if (selectedElement instanceof TestElement || selectedElement instanceof
+		// BuildElement) {
+		// return handlers.stream().filter(h -> h instanceof
+		// HudsonHandler).findAny().get();
+		//
+		// }
 		return null;
 	}
 

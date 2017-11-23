@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.handlers.PriorityHandler;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
@@ -68,12 +68,16 @@ public class CapraTableViewer extends TableViewer {
 		listeners.stream().forEach(listener -> listener.handleChange());
 	}
 
-	public void addToSelection(List<Object> list) {
-		list.stream().forEach(obj -> addToSelection(obj));
-		listeners.stream().forEach(listener -> listener.handleChange());
+	public void addToSelection(List<Object> list) throws CapraException {
+		for(Object obj : list) {
+			addToSelection(obj);
+		}
+		for(IChangeListener listener : listeners) {
+			listener.handleChange();
+		}
 	}
 
-	public void addToSelection(Object data) {
+	public void addToSelection(Object data) throws CapraException {
 		Collection<?> coll = null;
 		if (data instanceof TreeSelection) {
 			TreeSelection tree = (TreeSelection) data;
@@ -96,21 +100,27 @@ public class CapraTableViewer extends TableViewer {
 		listeners.stream().forEach(listener -> listener.handleChange());
 	}
 
-	private ArtifactHandler getHandler(Object target) {
+	private ArtifactHandler getHandler(Object target) throws CapraException {
 		Collection<ArtifactHandler> artifactHandlers = ExtensionPointUtil.getArtifactHandlers();
-		List<ArtifactHandler> availableHandlers = artifactHandlers.stream()
-				.filter(handler -> handler.canHandleSelection(target)).collect(Collectors.toList());
-		Optional<PriorityHandler> priorityHandler = ExtensionPointUtil.getPriorityHandler();
+		
+		List<ArtifactHandler> availableHandlers = new ArrayList<>();
+		for (ArtifactHandler artifactHandler : artifactHandlers) {
+			if (artifactHandler.canHandleSelection(target)) {
+				availableHandlers.add(artifactHandler);
+			}
+		}
+		
+		PriorityHandler priorityHandler = ExtensionPointUtil.getPriorityHandler();
 		if (availableHandlers.size() == 0) {
 			MessageDialog.openWarning(getControl().getShell(), "No handler for selected item",
 					"There is no handler for " + target + " so it will be ignored.");
 			return null;
-		} else if (availableHandlers.size() > 1 && !priorityHandler.isPresent()) {
+		} else if (availableHandlers.size() > 1 && priorityHandler==null) {
 			MessageDialog.openWarning(getControl().getShell(), "Multiple handlers for selected item",
 					"There are multiple handlers for " + target + " so it will be ignored.");
 			return null;
-		} else if (availableHandlers.size() > 1 && !priorityHandler.isPresent()) {
-			return priorityHandler.get().getSelectedHandler(availableHandlers, target);
+		} else if (availableHandlers.size() > 1 && priorityHandler!=null) {
+			return priorityHandler.getSelectedHandler(availableHandlers, target);
 		} else
 			return availableHandlers.get(0);
 	}

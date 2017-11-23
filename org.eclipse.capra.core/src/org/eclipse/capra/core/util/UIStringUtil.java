@@ -12,6 +12,7 @@ package org.eclipse.capra.core.util;
 
 import java.util.Optional;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.emf.common.util.EList;
@@ -28,19 +29,21 @@ public class UIStringUtil {
 	 * Builds an identifier String for the given EObject. This identifier starts
 	 * with
 	 * <ul>
-	 * <li>the attribute of the EObject as a String, if the EObject does only
-	 * have one attribute.</li>
+	 * <li>the attribute of the EObject as a String, if the EObject does only have
+	 * one attribute.</li>
 	 * <li>the attribute called 'name' of the EObject, if it has such an
 	 * attribute</li>
-	 * <li>any attribute of the EObject, but String attributes are preferred
-	 * </li>
+	 * <li>any attribute of the EObject, but String attributes are preferred</li>
 	 * </ul>
 	 * The identifier ends with " : " followed by the type of the EObject. <br>
 	 * Example: A Node with the name "foo" will result in "foo : Node" <br>
-	 * If the EObject does not have any attributes or all attributes have the
-	 * value null, this function will only return the type of the EObject.
+	 * If the EObject does not have any attributes or all attributes have the value
+	 * null, this function will only return the type of the EObject.
+	 * 
+	 * @throws CapraException
+	 *             Something went wrong
 	 */
-	public static String createUIString(final EObject eObject) {
+	public static String createUIString(final EObject eObject) throws CapraException {
 		if (eObject == null)
 			return "<null>";
 		if (eObject.eClass() == null)
@@ -62,15 +65,12 @@ public class UIStringUtil {
 			identifier.append(" : ");
 
 		boolean customHandlerName = false;
-		Optional<ArtifactMetaModelAdapter> optional = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
-		if (optional.isPresent()) {
-			ArtifactMetaModelAdapter adapter = optional.get();
-			ArtifactHandler artifactHandler = adapter.getArtifactHandler(eObject);
-			Object resolvedArtifact = artifactHandler.resolveArtifact(eObject);
-			String objectTypeName = artifactHandler.getObjectTypeName(resolvedArtifact);
-			identifier.append(objectTypeName);
-			customHandlerName = true;
-		}
+		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
+		ArtifactHandler artifactHandler = adapter.getArtifactHandler(eObject);
+		Object resolvedArtifact = artifactHandler.resolveArtifact(eObject);
+		String objectTypeName = artifactHandler.getObjectTypeName(resolvedArtifact);
+		identifier.append(objectTypeName);
+		customHandlerName = true;
 
 		if (!customHandlerName) {
 			identifier.append(eObject.eClass().getName());
@@ -82,8 +82,8 @@ public class UIStringUtil {
 	/**
 	 * @param name
 	 *            Use an empty StringBuilder as input. If this function returns
-	 *            true, this parameter has been filled, if it returns false,
-	 *            nothing happened.
+	 *            true, this parameter has been filled, if it returns false, nothing
+	 *            happened.
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
@@ -103,8 +103,8 @@ public class UIStringUtil {
 	/**
 	 * @param name
 	 *            Use an empty StringBuilder as input. If this function returns
-	 *            true, this parameter has been filled, if it returns false,
-	 *            nothing happened.
+	 *            true, this parameter has been filled, if it returns false, nothing
+	 *            happened.
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */
@@ -126,8 +126,8 @@ public class UIStringUtil {
 	/**
 	 * @param name
 	 *            Use an empty StringBuilder as input. If this function returns
-	 *            true, this parameter has been filled, if it returns false,
-	 *            nothing happened.
+	 *            true, this parameter has been filled, if it returns false, nothing
+	 *            happened.
 	 * @return Indicates the success of this function and if the last parameter
 	 *         contains output.
 	 */

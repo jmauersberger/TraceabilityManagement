@@ -65,8 +65,8 @@ public class ResourceListener implements IResourceChangeListener {
 			EObject awc;
 			ArtifactMetaModelAdapter artifactAdapter;
 
-			artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
-			tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+			artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
+			tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter();
 			awc = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
 			uri = EcoreUtil.getURI(awc);
 			EObject artifactModel = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
@@ -145,8 +145,8 @@ public class ResourceListener implements IResourceChangeListener {
 					ResourceSet resourceSet = new ResourceSetImpl();
 					ArtifactMetaModelAdapter artifactAdapter;
 
-					artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
-					tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+					artifactAdapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
+					tracePersistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter();
 					EObject artifactModel = tracePersistenceAdapter.getArtifactWrapperModel(resourceSet);
 					List<EObject> artifacts = artifactAdapter.getArtifacts(artifactModel);
 

@@ -39,11 +39,18 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 public class TraceCreationHandler extends AbstractHandler {
-	protected Collection<ArtifactHandler> artifactHandlers = ExtensionPointUtil.getArtifactHandlers();
-	protected TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter().get();
-	protected List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
-	protected PersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter().get();
+	protected Collection<ArtifactHandler> artifactHandlers;
+	protected TraceMetaModelAdapter traceAdapter;
+	protected List<TraceLinkAdapter> traceLinkAdapters;
+	protected PersistenceAdapter persistenceAdapter;
 
+	public TraceCreationHandler() throws CapraException {
+		artifactHandlers = ExtensionPointUtil.getArtifactHandlers();
+		traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter();
+		traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
+		persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter();
+	}
+	
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
 		Shell shell = window.getShell();

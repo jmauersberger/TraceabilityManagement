@@ -12,6 +12,8 @@ package org.eclipse.capra.ui.views;
 
 import java.util.List;
 
+import org.eclipse.capra.core.CapraException;
+import org.eclipse.capra.core.util.CapraExceptionUtil;
 import org.eclipse.capra.ui.linkview.views.CapraTableViewer;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -80,6 +82,10 @@ public class SelectionView extends ViewPart {
 	}
 
 	public void dropToSelection(List<Object> selection) {
-		viewer.addToSelection(selection);
+		try {
+			viewer.addToSelection(selection);
+		} catch (CapraException e) {
+			CapraExceptionUtil.handleException(e, "Error while Dropping");
+		}
 	}
 }

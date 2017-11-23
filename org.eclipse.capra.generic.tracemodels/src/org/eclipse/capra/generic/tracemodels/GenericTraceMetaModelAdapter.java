@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelFactory;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.TraceLinkAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
@@ -44,7 +45,7 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 	}
 
 	@Override
-	public List<EObject> getTracesBetween(EObject source, EObject target, EObject traceModel) {
+	public List<EObject> getTracesBetween(EObject source, EObject target, EObject traceModel) throws CapraException {
 		List<EObject> resultTraces = new ArrayList<>();
 
 		EcoreUtil.EqualityHelper helper = new EqualityHelper();
@@ -64,14 +65,6 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 								}
 							}
 						}
-
-						// if
-						// (traceLinkAdapter.getSources(trace).contains(source)
-						// &&
-						// traceLinkAdapter.getTargets(trace).contains(target))
-						// {
-						// resultTraces.add(trace);
-						// }
 					}
 				}
 			}
@@ -81,7 +74,7 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 	}
 
 	@Override
-	public List<EObject> getTracesFromSource(EObject source, EObject traceModel) {
+	public List<EObject> getTracesFromSource(EObject source, EObject traceModel) throws CapraException {
 		List<EObject> resultTraces = new ArrayList<>();
 		if (traceModel instanceof GenericTraceModel) {
 			GenericTraceModel m = (GenericTraceModel) traceModel;
@@ -102,7 +95,7 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 	}
 
 	@Override
-	public List<EObject> getTracesToTarget(EObject target, EObject traceModel) {
+	public List<EObject> getTracesToTarget(EObject target, EObject traceModel) throws CapraException {
 		List<EObject> resultTraces = new ArrayList<>();
 		if (traceModel instanceof GenericTraceModel) {
 			GenericTraceModel m = (GenericTraceModel) traceModel;
@@ -135,7 +128,7 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 	}
 
 	@Override
-	public TraceLinkAdapter getTraceLinkAdapter(EObject trace) {
+	public TraceLinkAdapter getTraceLinkAdapter(EObject trace) throws CapraException {
 		List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
 		for (TraceLinkAdapter adapter : traceLinkAdapters) {
 			if (adapter.canAdapt(trace.eClass())) {
