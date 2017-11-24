@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.capra.feature"
-      label="Capra_OpenCert"
-      version="0.7.0.qualifier"
-      license-feature="org.eclipse.license"
-      license-feature-version="0.0.0">
+      label="Feature"
+      version="1.0.0.qualifier"
+      provider-name="Ansys Medini">
 
-   <copyright>
-      Copyright (c) 2016 Chalmers | University of Gothenburg, rt-labs and others.
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
    </copyright>
 
-   <license url="%licenseURL">
-      %license
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
    </license>
+
+   <requires>
+      <import plugin="org.eclipse.emf" version="2.6.0" match="greaterOrEqual"/>
+   </requires>
 
    <plugin
          id="org.eclipse.capra.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.capra.generic.persistence"
@@ -43,14 +49,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.capra.handler.emf"
+         id="org.eclipse.capra.handler.doors"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.capra.handler.iresource"
+         id="org.eclipse.capra.handler.emf"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -65,6 +71,13 @@
 
    <plugin
          id="org.eclipse.capra.handler.hudson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.handler.iresource"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -92,6 +105,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.capra.handler.web"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.capra.ui"
          download-size="0"
          install-size="0"
@@ -100,6 +120,13 @@
 
    <plugin
          id="org.eclipse.capra.ui.plantuml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.ui.tracelinkview"
          download-size="0"
          install-size="0"
          version="0.0.0"
