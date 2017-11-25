@@ -20,7 +20,6 @@ import org.eclipse.capra.core.util.UIStringUtil;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
@@ -32,7 +31,11 @@ import org.eclipse.swt.graphics.Image;
 public class EMFHandler extends AbstractArtifactHandler {
 
 	public boolean canHandleSelection(Object selection) {
-		if (selection instanceof EObjectImpl) {
+		if (selection instanceof EObject) {
+			// We can find out if we have a CDO object by getting the URI. Local
+			// resources start with platform://... while CDO resources start
+			// with cdo://...
+			// getURI(selection);
 			return true;
 		} else if (selection instanceof IAdaptable) {
 			IAdaptable a = (IAdaptable) selection;
@@ -47,7 +50,7 @@ public class EMFHandler extends AbstractArtifactHandler {
 
 	@Override
 	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
-		if (selection instanceof EObjectImpl) {
+		if (selection instanceof EObject) {
 			return EObject.class.cast(selection);
 		} else if (selection instanceof IAdaptable) {
 			IAdaptable a = (IAdaptable) selection;
@@ -61,7 +64,7 @@ public class EMFHandler extends AbstractArtifactHandler {
 
 	@Override
 	public String getName(Object selection) throws CapraException {
-		if (selection instanceof EObjectImpl) {
+		if (selection instanceof EObject) {
 			EObject eObject = EObject.class.cast(selection);
 			return UIStringUtil.createUIString(eObject);
 		} else if (selection instanceof IAdaptable) {
@@ -77,7 +80,7 @@ public class EMFHandler extends AbstractArtifactHandler {
 
 	@Override
 	public String getURI(Object selection) {
-		if (selection instanceof EObjectImpl) {
+		if (selection instanceof EObject) {
 			EObject eObject = EObject.class.cast(selection);
 			return EcoreUtil.getURI(eObject).toString();
 		} else if (selection instanceof IAdaptable) {
@@ -102,7 +105,7 @@ public class EMFHandler extends AbstractArtifactHandler {
 
 		EObject eobj1 = null;
 
-		if (obj instanceof EObjectImpl) {
+		if (obj instanceof EObject) {
 			eobj1 = (EObject) obj;
 		} else if (obj instanceof IAdaptable) {
 			IAdaptable a = (IAdaptable) obj;
@@ -111,15 +114,18 @@ public class EMFHandler extends AbstractArtifactHandler {
 			}
 		}
 		EObject eobj2 = eobj1;
-		// Optional<Image> optional = ExtensionPointUtil.getExtensions(extensionID,
+		// Optional<Image> optional =
+		// ExtensionPointUtil.getExtensions(extensionID,
 		// "class").stream()
-		// .filter(ext -> ext instanceof AdapterFactory).map(ext -> (AdapterFactory)
+		// .filter(ext -> ext instanceof AdapterFactory).map(ext ->
+		// (AdapterFactory)
 		// ext)
 		// .filter(adapter -> adapter.isFactoryForType(eobj2))
 		// .map(adapter -> (IItemLabelProvider) adapter.adapt(eobj2,
 		// IItemLabelProvider.class))
 		// .filter(prov -> prov != null).map(prov -> (URL) prov.getImage(eobj2))
-		// .map(url -> ExtendedImageRegistry.INSTANCE.getImage(url)).findFirst();
+		// .map(url ->
+		// ExtendedImageRegistry.INSTANCE.getImage(url)).findFirst();
 
 		List<Object> extensions = ExtensionPointUtil.getExtensions(extensionID, "class");
 		for (Object ext : extensions) {

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.capra.core.util;
 
-import java.util.Optional;
-
 import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;

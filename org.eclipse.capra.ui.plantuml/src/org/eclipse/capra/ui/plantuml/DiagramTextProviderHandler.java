@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPart;
 
 import net.sourceforge.plantuml.eclipse.utils.DiagramTextProvider;
 
@@ -38,10 +39,10 @@ import net.sourceforge.plantuml.eclipse.utils.DiagramTextProvider;
  */
 public class DiagramTextProviderHandler implements DiagramTextProvider {
 	@Override
-	public String getDiagramText(IEditorPart editor, ISelection input) {
+	public String getDiagramText(IWorkbenchPart workbenchPart, ISelection input) {
 		List<Object> selection;
 		try {
-			selection = SelectionUtil.extractSelectedElements(editor.getSite().getSelectionProvider().getSelection());
+			selection = SelectionUtil.extractSelectedElements(workbenchPart.getSite().getSelectionProvider().getSelection());
 			ResourceSetImpl resourceSet = new ResourceSetImpl();
 			List<EObject> wrap = ArtifactWrappingUtil.wrap(selection, resourceSet);
 			return getDiagramText(wrap);
@@ -112,7 +113,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 	}
 
 	@Override
-	public boolean supportsEditor(IEditorPart editor) {
+	public boolean supportsWorkbenchPart(IWorkbenchPart workbenchPart) {
 		return true;
 	}
 

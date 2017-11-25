@@ -3,8 +3,8 @@ package org.eclipse.capra.ui.plantuml
 import java.util.Collection
 import java.util.List
 import org.eclipse.capra.core.util.ExtensionPointUtil
+import org.eclipse.capra.core.util.UIStringUtil
 import org.eclipse.capra.ui.plantuml.util.Connection
-import org.eclipse.capra.ui.plantuml.util.EMFHelper
 import org.eclipse.emf.ecore.EObject
 
 class VisualizationHelper {
@@ -15,10 +15,10 @@ class VisualizationHelper {
 			@startuml
 			salt
 			{#
-			«IF firstElements != null»
-				.«FOR e : secondElements»|«EMFHelper.getIdentifier(e)»«ENDFOR»
+			«IF firstElements !== null»
+				.«FOR e : secondElements»|«UIStringUtil.createUIString(e)»«ENDFOR»
 				«FOR first : firstElements»
-				«EMFHelper.getIdentifier(first)» «FOR second : secondElements»|«IF traceAdapter.getTracesBetween(first, second, traceModel).isEmpty()»X«ELSE».«ENDIF»«ENDFOR»
+				«UIStringUtil.createUIString(first)» «FOR second : secondElements»|«IF traceAdapter.getTracesBetween(first, second, traceModel).isEmpty()»X«ELSE».«ENDIF»«ENDFOR»
 			«ENDFOR»
 			«ELSE»
 				Choose two containers to show a traceability matrix of their contents.

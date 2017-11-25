@@ -30,7 +30,7 @@ public class CDTHandler extends AbstractArtifactHandler {
 
 	@Override
 	public ICElement resolveArtifact(EObject artifact) {
-		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter().get();
+		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
 		String uri = adapter.getArtifactUri(artifact);
 		return CoreModel.create(uri);
 	}

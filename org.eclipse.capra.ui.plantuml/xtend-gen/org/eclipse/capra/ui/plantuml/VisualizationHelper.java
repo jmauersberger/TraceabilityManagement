@@ -1,13 +1,12 @@
 package org.eclipse.capra.ui.plantuml;
 
-import com.google.common.base.Objects;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
+import org.eclipse.capra.core.util.UIStringUtil;
 import org.eclipse.capra.ui.plantuml.Connections;
 import org.eclipse.capra.ui.plantuml.util.Connection;
-import org.eclipse.capra.ui.plantuml.util.EMFHelper;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
@@ -27,21 +26,20 @@ public class VisualizationHelper {
         _builder.append("{#");
         _builder.newLine();
         {
-          boolean _notEquals = (!Objects.equal(firstElements, null));
-          if (_notEquals) {
+          if ((firstElements != null)) {
             _builder.append(".");
             {
               for(final EObject e : secondElements) {
                 _builder.append("|");
-                String _identifier = EMFHelper.getIdentifier(e);
-                _builder.append(_identifier);
+                String _createUIString = UIStringUtil.createUIString(e);
+                _builder.append(_createUIString);
               }
             }
             _builder.newLineIfNotEmpty();
             {
               for(final EObject first : firstElements) {
-                String _identifier_1 = EMFHelper.getIdentifier(first);
-                _builder.append(_identifier_1);
+                String _createUIString_1 = UIStringUtil.createUIString(first);
+                _builder.append(_createUIString_1);
                 _builder.append(" ");
                 {
                   for(final EObject second : secondElements) {

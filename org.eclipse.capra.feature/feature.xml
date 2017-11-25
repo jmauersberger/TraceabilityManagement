@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.capra.feature"
-      label="Feature"
+      label="Traceability"
       version="1.0.0.qualifier"
       provider-name="Ansys Medini">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="http://www.medini.eu">
+      Capra is a configurable and extendable traceability management
+tool. It is created in the context of a research project called
+AMALTHEA4Public. Now it is used in the AMASS research project.
+Ansys Medini is currently the main contributor to Capra within
+the scope of AMASS.
+http://www.medini.eu
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
-   </copyright>
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+http://www.eclipse.org/legal/epl-v10.html
    </license>
 
    <requires>
@@ -127,6 +132,13 @@
 
    <plugin
          id="org.eclipse.capra.ui.tracelinkview"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.capra.file"
          download-size="0"
          install-size="0"
          version="0.0.0"
