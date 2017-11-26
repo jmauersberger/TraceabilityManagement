@@ -53,7 +53,7 @@ public class CapraTableViewer extends TableViewer {
 	}
 
 	public List<Object> getObjects() {
-		return selection.stream().map(objectWithHandler -> objectWithHandler.o).collect(Collectors.toList());
+		return selection.stream().map(objectWithHandler -> objectWithHandler.getObj()).collect(Collectors.toList());
 	}
 
 	public void clearSelection() {
@@ -69,10 +69,10 @@ public class CapraTableViewer extends TableViewer {
 	}
 
 	public void addToSelection(List<Object> list) throws CapraException {
-		for(Object obj : list) {
+		for (Object obj : list) {
 			addToSelection(obj);
 		}
-		for(IChangeListener listener : listeners) {
+		for (IChangeListener listener : listeners) {
 			listener.handleChange();
 		}
 	}
@@ -102,24 +102,24 @@ public class CapraTableViewer extends TableViewer {
 
 	private ArtifactHandler getHandler(Object target) throws CapraException {
 		Collection<ArtifactHandler> artifactHandlers = ExtensionPointUtil.getArtifactHandlers();
-		
+
 		List<ArtifactHandler> availableHandlers = new ArrayList<>();
 		for (ArtifactHandler artifactHandler : artifactHandlers) {
 			if (artifactHandler.canHandleSelection(target)) {
 				availableHandlers.add(artifactHandler);
 			}
 		}
-		
+
 		PriorityHandler priorityHandler = ExtensionPointUtil.getPriorityHandler();
 		if (availableHandlers.size() == 0) {
 			MessageDialog.openWarning(getControl().getShell(), "No handler for selected item",
 					"There is no handler for " + target + " so it will be ignored.");
 			return null;
-		} else if (availableHandlers.size() > 1 && priorityHandler==null) {
+		} else if (availableHandlers.size() > 1 && priorityHandler == null) {
 			MessageDialog.openWarning(getControl().getShell(), "Multiple handlers for selected item",
 					"There are multiple handlers for " + target + " so it will be ignored.");
 			return null;
-		} else if (availableHandlers.size() > 1 && priorityHandler!=null) {
+		} else if (availableHandlers.size() > 1 && priorityHandler != null) {
 			return priorityHandler.getSelectedHandler(availableHandlers, target);
 		} else
 			return availableHandlers.get(0);

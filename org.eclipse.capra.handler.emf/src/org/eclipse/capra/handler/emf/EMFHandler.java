@@ -20,6 +20,7 @@ import org.eclipse.capra.core.util.UIStringUtil;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
@@ -43,6 +44,8 @@ public class EMFHandler extends AbstractArtifactHandler {
 				EObject adapter = a.getAdapter(EObject.class);
 				return canHandleSelection(adapter);
 			}
+		} else if (selection instanceof Resource) {
+			return true;
 		}
 
 		return false;
@@ -73,6 +76,8 @@ public class EMFHandler extends AbstractArtifactHandler {
 				EObject eObject = a.getAdapter(EObject.class);
 				return UIStringUtil.createUIString(eObject);
 			}
+		} else if (selection instanceof Resource) {
+			((Resource) selection).getURI().toString();
 		}
 
 		return null;
@@ -89,6 +94,8 @@ public class EMFHandler extends AbstractArtifactHandler {
 				EObject eObject = a.getAdapter(EObject.class);
 				return EcoreUtil.getURI(eObject).toString();
 			}
+		} else if (selection instanceof Resource) {
+			return ((Resource) selection).getURI().toString();
 		}
 
 		return null;
@@ -103,47 +110,37 @@ public class EMFHandler extends AbstractArtifactHandler {
 	public Image getIcon(Object obj) throws CapraException {
 		String extensionID = "org.eclipse.emf.edit.itemProviderAdapterFactories";
 
-		EObject eobj1 = null;
+		EObject eobj = null;
 
 		if (obj instanceof EObject) {
-			eobj1 = (EObject) obj;
+			eobj = (EObject) obj;
 		} else if (obj instanceof IAdaptable) {
 			IAdaptable a = (IAdaptable) obj;
 			if (a.getAdapter(EObject.class) != null) {
-				eobj1 = a.getAdapter(EObject.class);
+				eobj = a.getAdapter(EObject.class);
 			}
 		}
-		EObject eobj2 = eobj1;
-		// Optional<Image> optional =
-		// ExtensionPointUtil.getExtensions(extensionID,
-		// "class").stream()
-		// .filter(ext -> ext instanceof AdapterFactory).map(ext ->
-		// (AdapterFactory)
-		// ext)
-		// .filter(adapter -> adapter.isFactoryForType(eobj2))
-		// .map(adapter -> (IItemLabelProvider) adapter.adapt(eobj2,
-		// IItemLabelProvider.class))
-		// .filter(prov -> prov != null).map(prov -> (URL) prov.getImage(eobj2))
-		// .map(url ->
-		// ExtendedImageRegistry.INSTANCE.getImage(url)).findFirst();
-
-		List<Object> extensions = ExtensionPointUtil.getExtensions(extensionID, "class");
-		for (Object ext : extensions) {
-			if (ext instanceof AdapterFactory) {
-				AdapterFactory factory = (AdapterFactory) ext;
-				if (factory.isFactoryForType(eobj2)) {
-					IItemLabelProvider prov = (IItemLabelProvider) factory.adapt(eobj2, IItemLabelProvider.class);
-					if (prov != null) {
-						URL url = (URL) prov.getImage(eobj2);
-						Image image = ExtendedImageRegistry.INSTANCE.getImage(url);
-						if (image != null) {
-							return image;
+		if (eobj != null) {
+			List<Object> extensions = ExtensionPointUtil.getExtensions(extensionID, "class");
+			for (Object ext : extensions) {
+				if (ext instanceof AdapterFactory) {
+					AdapterFactory factory = (AdapterFactory) ext;
+					if (factory.isFactoryForType(eobj)) {
+						IItemLabelProvider prov = (IItemLabelProvider) factory.adapt(eobj, IItemLabelProvider.class);
+						if (prov != null) {
+							URL url = (URL) prov.getImage(eobj);
+							Image image = ExtendedImageRegistry.INSTANCE.getImage(url);
+							if (image != null) {
+								return image;
+							}
 						}
 					}
 				}
 			}
 		}
+		
+		
 
-		return super.getIcon(eobj2);
+		return super.getIcon(obj);
 	}
 }

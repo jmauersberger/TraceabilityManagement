@@ -17,6 +17,7 @@ import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.PersistenceAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.util.ArtifactWrappingUtil;
+import org.eclipse.capra.core.util.CapraExceptionUtil;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.capra.ui.plantuml.util.Connection;
 import org.eclipse.capra.ui.plantuml.util.SelectionUtil;
@@ -26,7 +27,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.IWorkbenchPart;
 
 import net.sourceforge.plantuml.eclipse.utils.DiagramTextProvider;
@@ -40,20 +41,19 @@ import net.sourceforge.plantuml.eclipse.utils.DiagramTextProvider;
 public class DiagramTextProviderHandler implements DiagramTextProvider {
 	@Override
 	public String getDiagramText(IWorkbenchPart workbenchPart, ISelection input) {
-		List<Object> selection;
 		try {
-			selection = SelectionUtil.extractSelectedElements(workbenchPart.getSite().getSelectionProvider().getSelection());
-			ResourceSetImpl resourceSet = new ResourceSetImpl();
-			List<EObject> wrap = ArtifactWrappingUtil.wrap(selection, resourceSet);
-			return getDiagramText(wrap);
-		} catch (CapraException ex) {
-			// Shell shell = editor.getSite().getShell();
-			// CapraExceptionUtil.handleException(shell, ex, "Cannot create
-			// input for trace diagram");
-			System.out.println(ex.getMessage());
-		}
+			ISelectionProvider selectionProvider = workbenchPart.getSite().getSelectionProvider();
+			if (selectionProvider != null) {
+				List<Object> selection = SelectionUtil.extractSelectedElements(selectionProvider.getSelection());
+				ResourceSetImpl resourceSet = new ResourceSetImpl();
+				List<EObject> wrap = ArtifactWrappingUtil.wrap(selection, resourceSet);
+				return getDiagramText(wrap);
+			}
+		} catch (CapraException e1) {
+			CapraExceptionUtil.handleException(e1, "Cannot create diagram text for PlantUML.");
+		} 
 
-		return "";
+		return null;
 	}
 
 	/**

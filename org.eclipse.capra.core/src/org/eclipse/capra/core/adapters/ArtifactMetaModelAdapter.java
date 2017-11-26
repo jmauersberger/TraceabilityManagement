@@ -102,5 +102,5 @@ public interface ArtifactMetaModelAdapter {
 	 * @return artifact handler instance
 	 * @throws CapraException Something went wrong
 	 */
-	ArtifactHandler getArtifactHandler(EObject artifact) throws CapraException;
+	ArtifactHandler getArtifactHandler(Object artifact) throws CapraException;
 }

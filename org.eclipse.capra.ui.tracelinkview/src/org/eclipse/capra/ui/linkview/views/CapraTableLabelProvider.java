@@ -29,7 +29,7 @@ public class CapraTableLabelProvider extends LabelProvider implements ITableLabe
 	private String doGetText(ObjectWithHandler objWitHandler) {
 		String result = null;
 		try {
-			result = objWitHandler.handler.getName(objWitHandler.o);
+			result = objWitHandler.getHandler().getName(objWitHandler.getObj());
 		} catch (CapraException e) {
 			e.printStackTrace();
 		}
@@ -43,7 +43,7 @@ public class CapraTableLabelProvider extends LabelProvider implements ITableLabe
 	private Image doGetImage(ObjectWithHandler objWithHandler) {
 		Image result = null;
 		try {
-			return objWithHandler.handler.getIcon(objWithHandler.o);
+			return objWithHandler.getHandler().getIcon(objWithHandler.getObj());
 		} catch (CapraException e) {
 			e.printStackTrace();
 		}

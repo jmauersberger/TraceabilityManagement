@@ -23,7 +23,7 @@ public class CapraExceptionUtil {
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-				MessageDialog.openError(activeShell, context, ex.getMessage());
+				MessageDialog.openError(activeShell, context, "Reason:\n\n\n" + ex.getMessage());
 			}
 		});
 	}
