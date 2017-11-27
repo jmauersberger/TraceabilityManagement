@@ -12,27 +12,58 @@
             name="Create Tracelinks"
             icon="icons/famfamfam/link.png"
             category="org.eclipse.capra.ui.tracelinkview"
-            class="org.eclipse.capra.ui.linkview.views.TracelinkView"
+            class="org.eclipse.capra.ui.tracelinkview.views.TracelinkView"
             id="org.eclipse.capra.ui.linkview.views.TracelinkView">
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
-         <view
-               ratio="0.5"
-               relative="org.eclipse.ui.views.ProblemView"
-               relationship="right"
-               id="org.eclipse.capra.ui.linkview.views.TracelinkView">
-         </view>
-      </perspectiveExtension>
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <separator
+               name="org.eclipse.capra.generic.separator2">
+         </separator>
+         <menu
+               label="Capra">
+            <command
+                  commandId="org.eclipse.capra.generic.addtosources"
+                  label="Add to Trace Sources"
+                  style="push"
+                  tooltip="Add the selected item to the list of trace sources.">
+            </command>
+            <command
+                  commandId="org.eclipse.capra.generic.addtotargets"
+                  label="Add to Trace Targets"
+                  style="push"
+                  tooltip="Add the selected item to the list of trace targets">
+            </command>
+         </menu>
+         <separator
+               name="org.eclipse.capra.generic.separator1">
+         </separator>
+      </menuContribution>
+   </extension>
+      <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.eclipse.capra.generic.addtosources"
+            name="Add to Sources">
+      </command>
+      <command
+            id="org.eclipse.capra.generic.addtotargets"
+            name="Add to Targets">
+      </command>      
    </extension>
    <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
-   </extension>
-
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.capra.ui.tracelinkview.handlers.AddtoSources"
+            commandId="org.eclipse.capra.generic.addtosources">
+      </handler>
+      <handler
+            class="org.eclipse.capra.ui.tracelinkview.handlers.AddtoTargets"
+            commandId="org.eclipse.capra.generic.addtotargets">
+      </handler>      
+   </extension>   
 </plugin>

@@ -1,4 +1,4 @@
-package org.eclipse.capra.ui.linkview.views;
+package org.eclipse.capra.ui.tracelinkview.views;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.eclipse.capra.core.operations.CreateConnection;
 import org.eclipse.capra.core.util.ArtifactWrappingUtil;
 import org.eclipse.capra.core.util.CapraExceptionUtil;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
-import org.eclipse.capra.ui.linkview.Activator;
-import org.eclipse.capra.ui.linkview.views.CapraTableViewer.IChangeListener;
+import org.eclipse.capra.ui.tracelinkview.Activator;
+import org.eclipse.capra.ui.tracelinkview.views.CapraTableViewer.IChangeListener;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.action.Action;
@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
@@ -62,7 +63,8 @@ public class TracelinkView extends ViewPart {
 	private Action clearViewersAction;
 
 	/**
-	 * This is a callback that will allow us to create the viewer and initialize it.
+	 * This is a callback that will allow us to create the viewer and initialize
+	 * it.
 	 */
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(2, true));
@@ -248,5 +250,31 @@ public class TracelinkView extends ViewPart {
 		boolean enableClearViewers = (linkTypeCombo.getText() != null && linkTypeCombo.getText().length() > 0)
 				|| !leftViewer.getObjects().isEmpty() || !rightViewer.getObjects().isEmpty();
 		clearViewersAction.setEnabled(enableClearViewers);
+	}
+
+	public static TracelinkView getOpenedView() {
+		try {
+			return (TracelinkView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ID);
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	public void addToSources(List<Object> selection) {
+		try {
+			leftViewer.addToSelection(selection);
+		} catch (CapraException e) {
+			CapraExceptionUtil.handleException(e, "Error while Dropping");
+		}
+	}
+	
+	public void addToTargets(List<Object> selection) {
+		try {
+			rightViewer.addToSelection(selection);
+		} catch (CapraException e) {
+			CapraExceptionUtil.handleException(e, "Error while Dropping");
+		}
 	}
 }

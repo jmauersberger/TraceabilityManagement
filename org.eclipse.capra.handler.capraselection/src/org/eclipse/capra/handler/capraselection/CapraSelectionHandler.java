@@ -14,7 +14,7 @@ import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
-import org.eclipse.capra.ui.linkview.views.ObjectWithHandler;
+import org.eclipse.capra.ui.tracelinkview.views.ObjectWithHandler;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.graphics.Image;
 

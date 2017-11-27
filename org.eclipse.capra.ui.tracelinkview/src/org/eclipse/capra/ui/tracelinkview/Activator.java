@@ -1,4 +1,4 @@
-package org.eclipse.capra.ui.linkview;
+package org.eclipse.capra.ui.tracelinkview;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;

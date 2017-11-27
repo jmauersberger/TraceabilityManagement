@@ -1,4 +1,4 @@
-package org.eclipse.capra.ui.linkview.views;
+package org.eclipse.capra.ui.tracelinkview.views;
 
 import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.util.CapraExceptionUtil;

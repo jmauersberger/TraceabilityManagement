@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Linkview
 Bundle-SymbolicName: org.eclipse.capra.ui.tracelinkview;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.eclipse.capra.ui.linkview.Activator
+Bundle-Activator: org.eclipse.capra.ui.tracelinkview.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.capra.core,
@@ -12,5 +12,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.ecore
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.capra.ui.linkview,
- org.eclipse.capra.ui.linkview.views
+Export-Package: org.eclipse.capra.ui.tracelinkview,
+ org.eclipse.capra.ui.tracelinkview.views

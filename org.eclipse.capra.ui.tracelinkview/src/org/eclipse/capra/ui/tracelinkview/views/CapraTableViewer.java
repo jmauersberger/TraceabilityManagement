@@ -1,4 +1,4 @@
-package org.eclipse.capra.ui.linkview.views;
+package org.eclipse.capra.ui.tracelinkview.views;
 
 import java.util.ArrayList;
 import java.util.Collection;
