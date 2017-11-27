@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.cdt;
 
+import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.ArtifactMetaModelAdapter;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
@@ -29,7 +30,7 @@ public class CDTHandler extends AbstractArtifactHandler {
 	}
 
 	@Override
-	public ICElement resolveArtifact(EObject artifact) {
+	public ICElement resolveArtifact(EObject artifact) throws CapraException {
 		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
 		String uri = adapter.getArtifactUri(artifact);
 		return CoreModel.create(uri);
