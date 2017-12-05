@@ -17,18 +17,22 @@ import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.ui.internal.WorkingSet;
 
 /**
  * A handler to allow creating traces to and from java elements such as classes
  * and methods based on JDT.
  */
+@SuppressWarnings("restriction")
 public class JavaElementHandler extends AbstractArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
 		if (selection instanceof IJavaElement) {
 			return true;
-		}
+		} else if (selection instanceof WorkingSet) {
+			return true;
+		} 
 
 		return false;
 	}
@@ -42,14 +46,28 @@ public class JavaElementHandler extends AbstractArtifactHandler {
 
 	@Override
 	public String getName(Object selection) {
-		IJavaElement cu = (IJavaElement) selection;
-		return cu.getElementName();
+		if (selection instanceof IJavaElement) {
+			IJavaElement cu = (IJavaElement) selection;
+			return cu.getElementName();
+		} else if (selection instanceof WorkingSet) {
+			WorkingSet ws = (WorkingSet) selection;
+			return ws.getName();
+		}
+
+		return "";
 	}
 
 	@Override
 	public String getURI(Object selection) {
-		IJavaElement cu = (IJavaElement) selection;
-		return cu.getHandleIdentifier();
+		if (selection instanceof IJavaElement) {
+			IJavaElement cu = (IJavaElement) selection;
+			return cu.getHandleIdentifier();
+		} else if (selection instanceof WorkingSet) {
+			WorkingSet ws = (WorkingSet) selection;
+			return ws.getId();
+		}
+
+		return "";
 	}
 
 }

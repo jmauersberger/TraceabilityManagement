@@ -19,7 +19,7 @@
             class="org.eclipse.capra.handler.emf.EMFHandler">
       </artifactHandler>
       <artifactHandler
-            class="org.eclipse.capra.handler.emf.XMIResourceHandler">
+            class="org.eclipse.capra.handler.emf.ResourceHandler">
       </artifactHandler>
    </extension>
 

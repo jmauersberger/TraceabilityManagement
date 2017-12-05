@@ -37,6 +37,9 @@ public class EMFHandler extends AbstractArtifactHandler {
 			// resources start with platform://... while CDO resources start
 			// with cdo://...
 			// getURI(selection);
+			if (getURI(selection).startsWith("cdo")) {
+				return false;
+			}
 			return true;
 		} else if (selection instanceof IAdaptable) {
 			IAdaptable a = (IAdaptable) selection;
@@ -45,7 +48,7 @@ public class EMFHandler extends AbstractArtifactHandler {
 				return canHandleSelection(adapter);
 			}
 		} else if (selection instanceof Resource) {
-			return true;
+			// return true;
 		}
 
 		return false;
@@ -138,8 +141,6 @@ public class EMFHandler extends AbstractArtifactHandler {
 				}
 			}
 		}
-		
-		
 
 		return super.getIcon(obj);
 	}

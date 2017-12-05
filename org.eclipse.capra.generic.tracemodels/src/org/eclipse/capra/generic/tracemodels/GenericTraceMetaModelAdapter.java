@@ -11,14 +11,17 @@
 package org.eclipse.capra.generic.tracemodels;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceMetaModelFactory;
 import org.eclipse.capra.GenericTraceMetaModel.GenericTraceModel;
 import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.TraceLinkAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
+import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -80,11 +83,16 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 			GenericTraceModel m = (GenericTraceModel) traceModel;
 			List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
 
+			String sourceUri = getUri(source);
 			for (EObject trace : m.getTraces()) {
 				for (TraceLinkAdapter traceLinkAdapter : traceLinkAdapters) {
 					if (traceLinkAdapter.canAdapt(trace.eClass())) {
-						if (traceLinkAdapter.getSources(trace).contains(source)) {
-							resultTraces.add(trace);
+						List<EObject> storedSources = traceLinkAdapter.getSources(trace);
+						for (EObject storedSource : storedSources) {
+							String storedSourceUri = getUri(storedSource);
+							if (sourceUri.equals(storedSourceUri)) {
+								resultTraces.add(trace);
+							}
 						}
 					}
 				}
@@ -101,15 +109,21 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 			GenericTraceModel m = (GenericTraceModel) traceModel;
 			List<TraceLinkAdapter> traceLinkAdapters = ExtensionPointUtil.getTraceLinkAdapters();
 
+			String targetUri = getUri(target);
 			for (EObject trace : m.getTraces()) {
 				for (TraceLinkAdapter traceLinkAdapter : traceLinkAdapters) {
 					if (traceLinkAdapter.canAdapt(trace.eClass())) {
-						if (traceLinkAdapter.getTargets(trace).contains(target)) {
-							resultTraces.add(trace);
+						List<EObject> storedTargets = traceLinkAdapter.getTargets(trace);
+						for (EObject storedTarget : storedTargets) {
+							String storedTargetUri = getUri(storedTarget);
+							if (targetUri.equals(storedTargetUri)) {
+								resultTraces.add(trace);
+							}
 						}
 					}
 				}
 			}
+
 		}
 
 		return resultTraces;
@@ -138,4 +152,16 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 		return null;
 	}
 
+	private String getUri(EObject eobj) throws CapraException {
+		String uri = null;
+		if (eobj instanceof ArtifactWrapper) {
+			uri = ((ArtifactWrapper) eobj).getUri();
+		} else {
+			ArtifactHandler artifactHandler = ExtensionPointUtil
+					.getArtifactHandler("org.eclipse.capra.handler.emf.EMFHandler");
+			uri = artifactHandler.getURI(eobj);
+		}
+
+		return uri;
+	}
 }

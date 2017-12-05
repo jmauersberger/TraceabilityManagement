@@ -47,7 +47,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 				List<Object> selection = SelectionUtil.extractSelectedElements(selectionProvider.getSelection());
 				ResourceSetImpl resourceSet = new ResourceSetImpl();
 				List<EObject> wrap = ArtifactWrappingUtil.wrap(selection, resourceSet);
-				return getDiagramText(wrap);
+				return getDiagramText(wrap, resourceSet);
 			}
 		} catch (CapraException e1) {
 			CapraExceptionUtil.handleException(e1, "Cannot create diagram text for PlantUML.");
@@ -68,7 +68,7 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 	 *         by PlantUML
 	 * @throws CapraException
 	 */
-	private String getDiagramText(List<EObject> eobjs) throws CapraException {
+	private String getDiagramText(List<EObject> eobjs, ResourceSet resourceSet) throws CapraException {
 		if (eobjs.isEmpty()) {
 			return "";
 		}
@@ -78,13 +78,6 @@ public class DiagramTextProviderHandler implements DiagramTextProvider {
 
 		PersistenceAdapter persistenceAdapter = ExtensionPointUtil.getTracePersistenceAdapter();
 		TraceMetaModelAdapter traceAdapter = ExtensionPointUtil.getTraceMetamodelAdapter();
-
-		// TODO: Traces need to be in the same resource set as the selected
-		// objects.
-		ResourceSet resourceSet = new ResourceSetImpl();
-		if (eobjs.get(0).eResource() != null) {
-			resourceSet = eobjs.get(0).eResource().getResourceSet();
-		}
 
 		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
 		List<Connection> connections = new ArrayList<>();

@@ -12,7 +12,11 @@ public abstract class AbstractArtifactHandler implements ArtifactHandler {
 	@Override
 	public EObject getEObjectForSelection(Object obj, EObject artifactModel) throws CapraException {
 		ArtifactMetaModelAdapter adapter = ExtensionPointUtil.getArtifactWrapperMetaModelAdapter();
-		EObject wrapper = adapter.createArtifact(artifactModel, this.getClass().getName(), getURI(obj), getName(obj));
+		String className = this.getClass().getName();
+		String uri = getURI(obj);
+		String name = getName(obj);
+
+		EObject wrapper = adapter.createArtifact(artifactModel, className, uri, name);
 		return wrapper;
 	}
 

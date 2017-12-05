@@ -44,8 +44,9 @@ public class GenericArtifactMetaModelAdapter extends AbstractArtifactMetaModelAd
 	public EObject getArtifact(EObject artifactModel, String artifactUri) {
 		ArtifactWrapperContainer container = getContainer(artifactModel);
 		for (ArtifactWrapper artifact : container.getArtifacts()) {
-			if (getArtifactUri(artifact).equals(artifactUri))
+			if (artifactUri.equals(getArtifactUri(artifact))) {
 				return artifact;
+			}
 		}
 		return null;
 	}

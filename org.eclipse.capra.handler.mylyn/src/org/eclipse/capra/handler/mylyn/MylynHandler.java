@@ -32,14 +32,21 @@ public class MylynHandler extends AbstractArtifactHandler {
 
 	@Override
 	public String getName(Object selection) {
-		ITask task = (ITask) selection;
-		return task.getSummary();
+		if (selection instanceof ITask) {
+			ITask task = (ITask) selection;
+			return task.getSummary();
+		}
+		return null;
 	}
 
 	@Override
 	public String getURI(Object selection) {
-		ITask task = (ITask) selection;
-		return task.getUrl();
+		if (selection instanceof ITask) {
+			ITask task = (ITask) selection;
+			return task.getUrl();
+		}
+
+		return "";
 	}
 
 }

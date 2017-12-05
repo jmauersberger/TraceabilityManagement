@@ -19,6 +19,9 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -107,7 +110,8 @@ public class TracelinkView extends ViewPart {
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(leftViewer.getControl(),
 				"org.eclipse.capra.ui.tracelinkview.viewer");
-		getSite().setSelectionProvider(leftViewer);
+//		getSite().setSelectionProvider(leftViewer);
+		getSite().setSelectionProvider(new SelectionProvider(rightViewer, leftViewer));
 		makeActions();
 		hookContextMenu();
 		contributeToActionBars();
