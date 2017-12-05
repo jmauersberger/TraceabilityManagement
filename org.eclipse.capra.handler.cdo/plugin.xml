@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.eclipse.capra.handler.cdo.CdoHandler"
+         point="org.eclipse.capra.configuration.artifactHandler">
+      <artifactHandler
+            class="org.eclipse.capra.handler.cdo.CdoHandler">
+      </artifactHandler>
+   </extension>
+
+</plugin>

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Cdo
+Bundle-SymbolicName: org.eclipse.capra.handler.cdo;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.capra.handler.cdo.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.capra.core,
+ org.eclipse.emf.cdo,
+ org.eclipse.jface,
+ org.eclipse.emf.cdo.net4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
