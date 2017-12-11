@@ -32,14 +32,14 @@ import org.eclipse.swt.graphics.Image;
 public class EMFHandler extends AbstractArtifactHandler {
 
 	public boolean canHandleSelection(Object selection) {
-		if (selection instanceof EObject) {
+		if (selection instanceof EObject && !(selection instanceof Resource)) {
 			// We can find out if we have a CDO object by getting the URI. Local
 			// resources start with platform://... while CDO resources start
 			// with cdo://...
 			// getURI(selection);
-			if (getURI(selection).startsWith("cdo")) {
-				return false;
-			}
+			// if (getURI(selection).startsWith("cdo")) {
+			// return false;
+			// }
 			return true;
 		} else if (selection instanceof IAdaptable) {
 			IAdaptable a = (IAdaptable) selection;
@@ -47,9 +47,11 @@ public class EMFHandler extends AbstractArtifactHandler {
 				EObject adapter = a.getAdapter(EObject.class);
 				return canHandleSelection(adapter);
 			}
-		} else if (selection instanceof Resource) {
-			// return true;
-		}
+		} 
+		
+//		else if (selection instanceof Resource) {
+//			return true;
+//		}
 
 		return false;
 	}
@@ -63,7 +65,11 @@ public class EMFHandler extends AbstractArtifactHandler {
 			if (a.getAdapter(EObject.class) != null) {
 				return a.getAdapter(EObject.class);
 			}
-		}
+		} 
+		
+//		else if (selection instanceof Resource) {
+//			System.out.println();
+//		}
 
 		return null;
 	}
@@ -79,9 +85,11 @@ public class EMFHandler extends AbstractArtifactHandler {
 				EObject eObject = a.getAdapter(EObject.class);
 				return UIStringUtil.createUIString(eObject);
 			}
-		} else if (selection instanceof Resource) {
-			((Resource) selection).getURI().toString();
-		}
+		} 
+		
+//		else if (selection instanceof Resource) {
+//			((Resource) selection).getURI().toString();
+//		}
 
 		return null;
 	}
@@ -97,9 +105,11 @@ public class EMFHandler extends AbstractArtifactHandler {
 				EObject eObject = a.getAdapter(EObject.class);
 				return EcoreUtil.getURI(eObject).toString();
 			}
-		} else if (selection instanceof Resource) {
-			return ((Resource) selection).getURI().toString();
-		}
+		} 
+		
+//		else if (selection instanceof Resource) {
+//			return ((Resource) selection).getURI().toString();
+//		}
 
 		return null;
 	}

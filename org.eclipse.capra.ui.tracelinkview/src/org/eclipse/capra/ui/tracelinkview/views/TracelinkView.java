@@ -1,5 +1,7 @@
 package org.eclipse.capra.ui.tracelinkview.views;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.capra.core.CapraException;
@@ -19,9 +21,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -30,7 +29,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
@@ -110,7 +108,7 @@ public class TracelinkView extends ViewPart {
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(leftViewer.getControl(),
 				"org.eclipse.capra.ui.tracelinkview.viewer");
-//		getSite().setSelectionProvider(leftViewer);
+		// getSite().setSelectionProvider(leftViewer);
 		getSite().setSelectionProvider(new SelectionProvider(rightViewer, leftViewer));
 		makeActions();
 		hookContextMenu();
@@ -130,10 +128,18 @@ public class TracelinkView extends ViewPart {
 			List<TraceLinkAdapter> traceTypes = tradeModelAdapter.getAvailableTraceTypes(leftWrappedEObjs,
 					rightWrappedEObjs);
 			linkTypeCombo.removeAll();
-			traceTypes.stream().map(traceLinkAdapter -> traceLinkAdapter.getLinkType()).sorted()
-					.forEach(name -> linkTypeCombo.add(name));
+
+			List<String> linkTypes = new ArrayList<>();
+			for (TraceLinkAdapter traceType : traceTypes) {
+				String linkType = traceType.getLinkType();
+				linkTypes.add(linkType);
+			}
+			Collections.sort(linkTypes, String.CASE_INSENSITIVE_ORDER);
+			for (String linkType : linkTypes) {
+				linkTypeCombo.add(linkType);
+			}
+
 		} catch (CapraException ex) {
-			Shell shell = getViewSite().getShell();
 			CapraExceptionUtil.handleException(ex, "Error while Retrieving Trace Link Types");
 		}
 
@@ -142,12 +148,11 @@ public class TracelinkView extends ViewPart {
 		int newItemCount = linkTypeCombo.getItemCount();
 		if (oldSelectionIndex == -1 && newItemCount > 0) {
 			linkTypeCombo.select(0);
-		} else if (oldSelectionIndex != -1 && linkTypeCombo.getItemCount() > oldSelectionIndex) {
+		} else if (oldSelectionIndex >= 0 && linkTypeCombo.getItemCount() > oldSelectionIndex) {
 			linkTypeCombo.select(oldSelectionIndex);
 		}
 
 		linkTypeCombo.update();
-
 	}
 
 	private void hookContextMenu() {
@@ -265,7 +270,7 @@ public class TracelinkView extends ViewPart {
 
 		return null;
 	}
-	
+
 	public void addToSources(List<Object> selection) {
 		try {
 			leftViewer.addToSelection(selection);
@@ -273,7 +278,7 @@ public class TracelinkView extends ViewPart {
 			CapraExceptionUtil.handleException(e, "Error while Dropping");
 		}
 	}
-	
+
 	public void addToTargets(List<Object> selection) {
 		try {
 			rightViewer.addToSelection(selection);

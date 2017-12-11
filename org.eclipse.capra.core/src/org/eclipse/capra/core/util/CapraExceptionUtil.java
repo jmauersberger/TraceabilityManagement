@@ -1,8 +1,6 @@
 package org.eclipse.capra.core.util;
 
 import org.eclipse.capra.core.CapraException;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -22,8 +20,12 @@ public class CapraExceptionUtil {
 	public static void handleException(CapraException ex, String context) {
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			public void run() {
-				Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-				MessageDialog.openError(activeShell, context, "Reason:\n\n\n" + ex.getMessage());
+				// Shell activeShell =
+				// PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+				// MessageDialog.openError(activeShell, context, "Reason:\n\n\n"
+				// + ex.getMessage());
+
+				System.err.println(ex);
 			}
 		});
 	}

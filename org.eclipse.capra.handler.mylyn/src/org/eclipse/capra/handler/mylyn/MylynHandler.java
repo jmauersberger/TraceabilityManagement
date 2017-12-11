@@ -43,7 +43,13 @@ public class MylynHandler extends AbstractArtifactHandler {
 	public String getURI(Object selection) {
 		if (selection instanceof ITask) {
 			ITask task = (ITask) selection;
-			return task.getUrl();
+			String url = task.getUrl();
+			if (url == null || url.length() == 0) {
+				String repositoryUrl = task.getRepositoryUrl();
+				String taskId = task.getTaskId();
+				String taskSummary = task.getSummary();
+				return repositoryUrl + "/?taskId=" + taskId + "&summary=" + taskSummary;
+			}
 		}
 
 		return "";

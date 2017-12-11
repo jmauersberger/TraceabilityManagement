@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.capra.feature_1.0.0.201712051334.jar" id="org.eclipse.capra.feature" version="1.0.0.201712051334">
+   <feature url="features/org.eclipse.capra.feature_1.0.0.201712111140.jar" id="org.eclipse.capra.feature" version="1.0.0.201712111140">
       <category name="org.eclipse.capra.traceability"/>
    </feature>
    <category-def name="org.eclipse.capra.traceability" label="Traceability">

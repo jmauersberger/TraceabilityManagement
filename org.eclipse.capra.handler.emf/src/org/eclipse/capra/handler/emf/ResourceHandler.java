@@ -90,7 +90,6 @@ public class ResourceHandler extends AbstractArtifactHandler {
 							return icon;
 						}
 					} catch (Exception ex) {
-						System.out.println();
 					}
 				}
 			}
