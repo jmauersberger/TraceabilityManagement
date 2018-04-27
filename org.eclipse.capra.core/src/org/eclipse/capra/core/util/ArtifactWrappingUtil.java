@@ -42,6 +42,10 @@ public class ArtifactWrappingUtil {
 			return validArtifactHandlers.get(0).getEObjectForSelection(obj, artifactWrapperModel);
 		} else if (validArtifactHandlers.size() > 1 && priorityHandler != null) {
 			ArtifactHandler selectedHandler = priorityHandler.getSelectedHandler(validArtifactHandlers, obj);
+			// the returned value might be null in some cases, better check it
+			if (selectedHandler == null) {
+				throw new CapraException("No handler for item " + obj + " so it will be ignored.");
+			}
 			return selectedHandler.getEObjectForSelection(obj, artifactWrapperModel);
 		} else {
 			throw new CapraException("No handler for item " + obj + " so it will be ignored.");

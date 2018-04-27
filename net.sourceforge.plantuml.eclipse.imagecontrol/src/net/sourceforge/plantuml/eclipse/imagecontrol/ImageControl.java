@@ -463,6 +463,9 @@ public class ImageControl extends Canvas {
 	 *            the relative adjustment in y-direction
 	 */
 	private void pan(Point p) {
+		if (screenImage == null) {
+			return;
+		}
 		Rectangle bounds = screenImage.getBounds();
 		ScrollBar hBar = getHorizontalBar(), vBar = getVerticalBar();
 		Rectangle barBounds = bounds; // new Rectangle(hBar.getMinimum(),
