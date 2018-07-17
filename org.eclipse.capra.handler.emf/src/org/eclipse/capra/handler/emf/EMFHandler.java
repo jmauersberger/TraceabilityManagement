@@ -22,6 +22,7 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.edit.provider.ComposedImage;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.swt.graphics.Image;
@@ -141,7 +142,13 @@ public class EMFHandler extends AbstractArtifactHandler {
 					if (factory.isFactoryForType(eobj)) {
 						IItemLabelProvider prov = (IItemLabelProvider) factory.adapt(eobj, IItemLabelProvider.class);
 						if (prov != null) {
-							URL url = (URL) prov.getImage(eobj);
+							URL url = null;
+							if(prov.getImage(eobj) instanceof URL){
+								url = (URL) prov.getImage(eobj);
+							}else if(prov.getImage(eobj) instanceof ComposedImage){
+								ComposedImage cimage = (ComposedImage) prov.getImage(eobj);
+								url = (URL) cimage.getImages().get(0);
+							}
 							Image image = ExtendedImageRegistry.INSTANCE.getImage(url);
 							if (image != null) {
 								return image;

@@ -3,7 +3,6 @@ package org.eclipse.capra.ui.tracelinkview.views;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.TraceLinkAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
@@ -11,7 +10,9 @@ import org.eclipse.capra.core.operations.CreateConnection;
 import org.eclipse.capra.core.util.ArtifactWrappingUtil;
 import org.eclipse.capra.core.util.CapraExceptionUtil;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
+import org.eclipse.capra.core.util.TraceLinkAttribute;
 import org.eclipse.capra.ui.tracelinkview.Activator;
+import org.eclipse.capra.ui.tracelinkview.dialogs.TraceLinkAttributesDialog;
 import org.eclipse.capra.ui.tracelinkview.views.CapraTableViewer.IChangeListener;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -21,6 +22,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -29,6 +31,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
@@ -78,7 +81,7 @@ public class TracelinkView extends ViewPart {
 		GridData linkTypeGridData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		linkTypeGridData.horizontalSpan = 2;
 		linkTypeCombo.setLayoutData(linkTypeGridData);
-
+		
 		leftViewer = new CapraTableViewer(parent, SWT.MULTI | SWT.BORDER);
 		leftViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		leftViewer.addChangeListener(new IChangeListener() {
@@ -199,7 +202,27 @@ public class TracelinkView extends ViewPart {
 				List<Object> targets = rightViewer.getObjects();
 
 				try {
-					CreateConnection createConnection = new CreateConnection(sources, targets, traceType);
+					//attributes
+					TraceLinkAdapter traceLinkAdapter = ExtensionPointUtil.getTraceLinkAdapter(traceType);
+//					System.out.println("*traceLinkAdapter: " + traceLinkAdapter.getLinkType());
+					List<TraceLinkAttribute> attributes = traceLinkAdapter.getAttributes();
+					if(attributes.size() > 0){
+//						System.out.println("*with " + attributes.size() + " attributes");
+//						for(TraceLinkAttribute attr : attributes){
+//							System.out.println("*Name: " + attr.getName() + " type: " + attr.getType() + " value: " + attr.getValue());
+//						}
+						//pass attributes to a Dialog Window with a table/form to view and edit
+						Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+						TraceLinkAttributesDialog dialog = new TraceLinkAttributesDialog(shell, attributes);
+						if (dialog.open() == Window.OK) {
+							attributes = dialog.getAttributes();
+//							for(TraceLinkAttribute attr : attributes){
+//								System.out.println("***Name: " + attr.getName() + " type: " + attr.getType() + " value: " + attr.getValue());
+//							}
+						}
+					}
+					
+					CreateConnection createConnection = new CreateConnection(sources, targets, traceType, attributes);
 					createConnection.execute();
 				} catch (CapraException ex) {
 					CapraExceptionUtil.handleException(ex, "Create Connection Failed");

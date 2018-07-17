@@ -201,4 +201,24 @@ public class ExtensionPointUtil {
 			throw new CapraException(e);
 		}
 	}
+	
+	
+	//added by Intecs
+	public static TraceLinkAdapter getTraceLinkAdapter(String linkType) throws CapraException {
+		try {
+			TraceLinkAdapter adapter = null;
+			List<Object> extensions = getExtensions(TRACE_LINK_ID, TRACE__LINK_CONFIG);
+			for(Object obj : extensions){
+				if(obj instanceof TraceLinkAdapter){
+					TraceLinkAdapter tmp = (TraceLinkAdapter)obj;
+					if(tmp.getLinkType().equals(linkType)){
+						adapter = tmp;
+					}
+				}
+			}
+			return adapter;
+		} catch (Exception e) {
+			throw new CapraException(e);
+		}
+	}
 }

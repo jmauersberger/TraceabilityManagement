@@ -22,6 +22,7 @@ import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.TraceLinkAdapter;
 import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.handlers.ArtifactHandler;
+import org.eclipse.capra.core.util.CapraExceptionUtil;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -40,11 +41,26 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 
 	@Override
 	public List<TraceLinkAdapter> getAvailableTraceTypes(List<EObject> sources, List<EObject> targets) {
+		
+		//TODO: modified by Intecs (in progress)
+		List<TraceLinkAdapter> traceTypesAvailable = new ArrayList<>();
+
 		if (!sources.isEmpty() && !targets.isEmpty()) {
-			return Collections.singletonList(new GenericTraceLinkAdapter());
-		} else {
-			return Collections.<TraceLinkAdapter>emptyList();
+			try {
+				List<TraceLinkAdapter> traceTypes = ExtensionPointUtil.getTraceLinkAdapters();
+				for(TraceLinkAdapter adapter : traceTypes){
+					if(adapter.canCreateLink(sources, targets)){
+						traceTypesAvailable.add(adapter);
+					}
+				}
+
+			} catch (CapraException e) {
+				CapraExceptionUtil.handleException(e, "Error while Retrieving Available Trace Link Types");
+			}
+
 		}
+		return Collections.unmodifiableList(traceTypesAvailable);
+
 	}
 
 	@Override
@@ -92,6 +108,9 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 							String storedSourceUri = getUri(storedSource);
 							if (sourceUri.equals(storedSourceUri)) {
 								resultTraces.add(trace);
+							}else if (EcoreUtil.equals(source, storedSource)) {
+								resultTraces.add(trace);
+								
 							}
 						}
 					}
@@ -118,6 +137,9 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 							String storedTargetUri = getUri(storedTarget);
 							if (targetUri.equals(storedTargetUri)) {
 								resultTraces.add(trace);
+							}else if (EcoreUtil.equals(target, storedTarget)) {
+								resultTraces.add(trace);
+								
 							}
 						}
 					}

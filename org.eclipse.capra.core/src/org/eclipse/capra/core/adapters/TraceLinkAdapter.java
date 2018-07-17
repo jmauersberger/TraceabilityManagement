@@ -1,8 +1,8 @@
 package org.eclipse.capra.core.adapters;
 
 import java.util.List;
-
 import org.eclipse.capra.core.CapraException;
+import org.eclipse.capra.core.util.TraceLinkAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 
@@ -60,6 +60,8 @@ public interface TraceLinkAdapter {
 	 */
 	boolean canCreateLink(List<EObject> sources, List<EObject> targets);
 
+	
+	//Modified by Intecs
 	/**
 	 * Creates a tracelink between the sources and the target.
 	 * 
@@ -70,5 +72,21 @@ public interface TraceLinkAdapter {
 	 * @return the tracelink
 	 * @throws CapraException Something went wrong
 	 */
-	EObject createLink(List<EObject> sources, List<EObject> targets) throws CapraException;
+	EObject createLink(List<EObject> sources, List<EObject> targets, List<TraceLinkAttribute> attributes) throws CapraException;
+	
+	//Added by Intecs
+	/**
+	 * Gets the attributes of the tracelink type
+	 * @return the attributes
+	 */
+	List<TraceLinkAttribute> getAttributes();
+	
+	//Added by Intecs
+	/**
+	 * Computes the label for the eobject parameter
+	 * @param eobject
+	 * @return a String representation (Label) of the eobject parameter
+	 */
+	String getLabelForEObject(EObject eobject);
+	
 }
