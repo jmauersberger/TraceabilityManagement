@@ -16,6 +16,7 @@ import org.eclipse.capra.core.util.UIStringUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.TreeElement;
+import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.impl.EObjectTreeElementImpl;
 
 /**
  * A handler to create trace links from and to model elements created in
@@ -25,26 +26,43 @@ public class PapyrusHandler extends AbstractArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object selection) {
-		return selection instanceof TreeElement;
+		boolean test = false;
+		if(selection instanceof EObjectTreeElementImpl || selection instanceof EObject){
+			test = true;
+		}
+		return test;
 	}
 
 	@Override
 	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
 		// Returns the EObject corresponding to the input object if the input is
 		// an EObject, or if it is Adaptable to an EObject
-		return EObject.class.cast((TreeElement) selection);
+		if(selection instanceof EObjectTreeElementImpl){
+			return ((EObjectTreeElementImpl) selection).getEObject();
+		}else{
+			return null;
+		}
 	}
 
 	@Override
 	public String getName(Object selection) throws CapraException {
-		EObject eObject = EObject.class.cast(selection);
-		return UIStringUtil.createUIString(eObject);
+		if(selection instanceof EObjectTreeElementImpl){
+			EObject eObject = ((EObjectTreeElementImpl) selection).getEObject();
+			return UIStringUtil.createUIString(eObject);
+		}else{
+			return null;
+		}
 	}
 
 	@Override
 	public String getURI(Object selection) {
-		EObject eObject = EObject.class.cast(selection);
-		return EcoreUtil.getURI(eObject).toString();
+		if(selection instanceof EObjectTreeElementImpl){
+			EObject eObject = ((EObjectTreeElementImpl) selection).getEObject();
+			return EcoreUtil.getURI(eObject).toString();
+		}else{
+			return null;
+		}
+
 	}
 
 	@Override
