@@ -16,6 +16,13 @@ public class CreateConnection extends AbstractCapraOperation {
 	private String traceType;
 	private List<TraceLinkAttribute> attributes; 
 
+	public CreateConnection(List<Object> sources, List<Object> targets, String traceType) throws CapraException {
+		this.sources = sources;
+		this.targets = targets;
+		this.traceType = traceType;
+		this.attributes = null;
+	}
+	
 	public CreateConnection(List<Object> sources, List<Object> targets, String traceType, List<TraceLinkAttribute> attributes) throws CapraException {
 		this.sources = sources;
 		this.targets = targets;
