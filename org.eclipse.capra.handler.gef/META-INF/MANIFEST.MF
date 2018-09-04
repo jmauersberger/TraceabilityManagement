@@ -8,3 +8,4 @@ Require-Bundle: org.eclipse.capra.core,
  org.eclipse.papyrus.infra.emf;bundle-version="1.1.4",
  org.eclipse.gmf.runtime.diagram.ui;bundle-version="1.8.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.capra.handler.gef
