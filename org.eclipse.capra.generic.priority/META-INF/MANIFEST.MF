@@ -4,10 +4,13 @@ Bundle-Name: HudsonPriorityHandler
 Bundle-SymbolicName: org.eclipse.capra.generic.priority;singleton:=true
 Bundle-Version: 0.7.0.qualifier
 Require-Bundle: org.eclipse.capra.core,
- org.eclipse.emf.ecore;bundle-version="2.10.2"
+ org.eclipse.emf.ecore;bundle-version="2.10.2",
+ org.eclipse.uml2.uml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.capra.handler.emf,
  org.eclipse.capra.handler.gef,
  org.eclipse.capra.handler.papyrus,
  org.eclipse.gef,
- org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.impl
+ org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.impl,
+ org.eclipse.papyrus.infra.core.utils,
+ org.eclipse.papyrus.infra.emf.utils

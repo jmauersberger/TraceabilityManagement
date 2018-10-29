@@ -15,8 +15,13 @@ import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.util.UIStringUtil;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.TreeElement;
+import org.eclipse.gef.EditPart;
 import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.impl.EObjectTreeElementImpl;
+import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
+import org.eclipse.uml2.uml.Class;
+import org.eclipse.uml2.uml.Element;
+import org.eclipse.uml2.uml.NamedElement;
+import org.polarsys.chess.contracts.profile.chesscontract.util.ContractEntityUtil;
 
 /**
  * A handler to create trace links from and to model elements created in
@@ -27,6 +32,16 @@ public class PapyrusHandler extends AbstractArtifactHandler {
 	@Override
 	public boolean canHandleSelection(Object selection) {
 		boolean test = false;
+		
+		if (selection instanceof EditPart) {
+			
+			EObject obj = EMFHelper.getEObject(selection);
+			if (obj instanceof NamedElement){
+				return true;
+			}
+			
+		}
+		
 		if(selection instanceof EObjectTreeElementImpl || selection instanceof EObject){
 			test = true;
 		}
@@ -37,6 +52,17 @@ public class PapyrusHandler extends AbstractArtifactHandler {
 	public EObject getEObjectForSelection(Object selection, EObject artifactModel) {
 		// Returns the EObject corresponding to the input object if the input is
 		// an EObject, or if it is Adaptable to an EObject
+		
+		if (selection instanceof EditPart) {
+			EObject eobj = EMFHelper.getEObject(selection);
+			if (eobj instanceof Element){
+				if (ContractEntityUtil.getInstance().isContract((Element) eobj)){
+					 return  (EObject) ContractEntityUtil.getInstance().getContract((Class) eobj);
+				}
+				return eobj;
+			}
+		}
+		
 		if(selection instanceof EObjectTreeElementImpl){
 			return ((EObjectTreeElementImpl) selection).getEObject();
 		}else{

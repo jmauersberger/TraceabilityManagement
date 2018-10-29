@@ -20,6 +20,8 @@ import org.eclipse.capra.handler.papyrus.PapyrusHandler;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
 import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.impl.EObjectTreeElementImpl;
+import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
+import org.eclipse.uml2.uml.NamedElement;
 
 //import org.eclipse.capra.core.handlers.ArtifactHandler;
 //import org.eclipse.capra.core.handlers.PriorityHandler;
@@ -41,17 +43,28 @@ public class DefaultPriorityHandler implements PriorityHandler {
 		//
 		// }
 		
-		if (selectedElement instanceof EditPart) {
-				 return handlers.stream().filter(h -> h instanceof GEFHandler).findAny().get();
+		try {
+		
+			if (selectedElement instanceof EditPart) {
 				
+				EObject obj = EMFHelper.getEObject(selectedElement);
+				if (obj instanceof NamedElement){
+					return handlers.stream().filter(h -> h instanceof PapyrusHandler).findAny().get();
+				}
+				
+				return handlers.stream().filter(h -> h instanceof GEFHandler).findAny().get();
+					
+			}
+			
+			if (selectedElement instanceof EObjectTreeElementImpl){
+				return handlers.stream().filter(h -> h instanceof PapyrusHandler).findAny().get();
+			}
+			
+			if (selectedElement instanceof EObject)
+				return handlers.stream().filter(h -> h instanceof EMFHandler).findAny().get();
+		}catch (Exception ex){
+			ex.printStackTrace();
 		}
-		
-		if (selectedElement instanceof EObjectTreeElementImpl){
-			return handlers.stream().filter(h -> h instanceof PapyrusHandler).findAny().get();
-		}
-		
-		if (selectedElement instanceof EObject)
-			return handlers.stream().filter(h -> h instanceof EMFHandler).findAny().get();
 		
 		return null;
 	}

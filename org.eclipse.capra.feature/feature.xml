@@ -3,7 +3,7 @@
       id="org.eclipse.capra.feature"
       label="Traceability"
       version="1.0.0.qualifier"
-      provider-name="Ansys Medini">
+      provider-name="Ansys Medini/Intecs">
 
    <description url="http://www.medini.eu">
       Capra is a configurable and extendable traceability management
