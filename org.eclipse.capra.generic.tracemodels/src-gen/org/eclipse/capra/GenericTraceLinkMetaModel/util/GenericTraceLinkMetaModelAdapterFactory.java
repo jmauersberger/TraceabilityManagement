@@ -68,8 +68,8 @@ public class GenericTraceLinkMetaModelAdapterFactory extends AdapterFactoryImpl 
 	protected GenericTraceLinkMetaModelSwitch<Adapter> modelSwitch =
 		new GenericTraceLinkMetaModelSwitch<Adapter>() {
 			@Override
-			public Adapter caseGenericTraceLink(GenericTraceLink object) {
-				return createGenericTraceLinkAdapter();
+			public Adapter caseRelatedTo(RelatedTo object) {
+				return createRelatedToAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -92,16 +92,16 @@ public class GenericTraceLinkMetaModelAdapterFactory extends AdapterFactoryImpl 
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink <em>Generic Trace Link</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo <em>Related To</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo
 	 * @generated
 	 */
-	public Adapter createGenericTraceLinkAdapter() {
+	public Adapter createRelatedToAdapter() {
 		return null;
 	}
 

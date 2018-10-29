@@ -57,14 +57,14 @@ public interface GenericTraceLinkMetaModelPackage extends EPackage {
 	GenericTraceLinkMetaModelPackage eINSTANCE = org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkMetaModelPackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkImpl <em>Generic Trace Link</em>}' class.
+	 * The meta object id for the '{@link org.eclipse.capra.GenericTraceLinkMetaModel.impl.RelatedToImpl <em>Related To</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkImpl
-	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkMetaModelPackageImpl#getGenericTraceLink()
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.RelatedToImpl
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkMetaModelPackageImpl#getRelatedTo()
 	 * @generated
 	 */
-	int GENERIC_TRACE_LINK = 0;
+	int RELATED_TO = 0;
 
 	/**
 	 * The feature id for the '<em><b>Sources</b></em>' reference list.
@@ -73,7 +73,7 @@ public interface GenericTraceLinkMetaModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GENERIC_TRACE_LINK__SOURCES = 0;
+	int RELATED_TO__SOURCES = 0;
 
 	/**
 	 * The feature id for the '<em><b>Targets</b></em>' reference list.
@@ -82,58 +82,58 @@ public interface GenericTraceLinkMetaModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int GENERIC_TRACE_LINK__TARGETS = 1;
+	int RELATED_TO__TARGETS = 1;
 
 	/**
-	 * The number of structural features of the '<em>Generic Trace Link</em>' class.
+	 * The number of structural features of the '<em>Related To</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int GENERIC_TRACE_LINK_FEATURE_COUNT = 2;
+	int RELATED_TO_FEATURE_COUNT = 2;
 
 	/**
-	 * The number of operations of the '<em>Generic Trace Link</em>' class.
+	 * The number of operations of the '<em>Related To</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int GENERIC_TRACE_LINK_OPERATION_COUNT = 0;
+	int RELATED_TO_OPERATION_COUNT = 0;
 
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink <em>Generic Trace Link</em>}'.
+	 * Returns the meta object for class '{@link org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo <em>Related To</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Generic Trace Link</em>'.
-	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink
+	 * @return the meta object for class '<em>Related To</em>'.
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo
 	 * @generated
 	 */
-	EClass getGenericTraceLink();
+	EClass getRelatedTo();
 
 	/**
-	 * Returns the meta object for the reference list '{@link org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink#getSources <em>Sources</em>}'.
+	 * Returns the meta object for the reference list '{@link org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo#getSources <em>Sources</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference list '<em>Sources</em>'.
-	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink#getSources()
-	 * @see #getGenericTraceLink()
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo#getSources()
+	 * @see #getRelatedTo()
 	 * @generated
 	 */
-	EReference getGenericTraceLink_Sources();
+	EReference getRelatedTo_Sources();
 
 	/**
-	 * Returns the meta object for the reference list '{@link org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink#getTargets <em>Targets</em>}'.
+	 * Returns the meta object for the reference list '{@link org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo#getTargets <em>Targets</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference list '<em>Targets</em>'.
-	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink#getTargets()
-	 * @see #getGenericTraceLink()
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo#getTargets()
+	 * @see #getRelatedTo()
 	 * @generated
 	 */
-	EReference getGenericTraceLink_Targets();
+	EReference getRelatedTo_Targets();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -159,14 +159,14 @@ public interface GenericTraceLinkMetaModelPackage extends EPackage {
 	 */
 	interface Literals {
 		/**
-		 * The meta object literal for the '{@link org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkImpl <em>Generic Trace Link</em>}' class.
+		 * The meta object literal for the '{@link org.eclipse.capra.GenericTraceLinkMetaModel.impl.RelatedToImpl <em>Related To</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkImpl
-		 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkMetaModelPackageImpl#getGenericTraceLink()
+		 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.RelatedToImpl
+		 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkMetaModelPackageImpl#getRelatedTo()
 		 * @generated
 		 */
-		EClass GENERIC_TRACE_LINK = eINSTANCE.getGenericTraceLink();
+		EClass RELATED_TO = eINSTANCE.getRelatedTo();
 
 		/**
 		 * The meta object literal for the '<em><b>Sources</b></em>' reference list feature.
@@ -174,7 +174,7 @@ public interface GenericTraceLinkMetaModelPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference GENERIC_TRACE_LINK__SOURCES = eINSTANCE.getGenericTraceLink_Sources();
+		EReference RELATED_TO__SOURCES = eINSTANCE.getRelatedTo_Sources();
 
 		/**
 		 * The meta object literal for the '<em><b>Targets</b></em>' reference list feature.
@@ -182,7 +182,7 @@ public interface GenericTraceLinkMetaModelPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference GENERIC_TRACE_LINK__TARGETS = eINSTANCE.getGenericTraceLink_Targets();
+		EReference RELATED_TO__TARGETS = eINSTANCE.getRelatedTo_Targets();
 
 	}
 

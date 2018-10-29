@@ -66,9 +66,9 @@ public class GenericTraceLinkMetaModelSwitch<T> extends Switch<T> {
 	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK: {
-				GenericTraceLink genericTraceLink = (GenericTraceLink)theEObject;
-				T result = caseGenericTraceLink(genericTraceLink);
+			case GenericTraceLinkMetaModelPackage.RELATED_TO: {
+				RelatedTo relatedTo = (RelatedTo)theEObject;
+				T result = caseRelatedTo(relatedTo);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -77,17 +77,17 @@ public class GenericTraceLinkMetaModelSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Generic Trace Link</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Related To</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Generic Trace Link</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Related To</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseGenericTraceLink(GenericTraceLink object) {
+	public T caseRelatedTo(RelatedTo object) {
 		return null;
 	}
 

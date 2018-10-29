@@ -2,9 +2,9 @@
  */
 package org.eclipse.capra.GenericTraceLinkMetaModel.impl;
 
-import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink;
 import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLinkMetaModelFactory;
 import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLinkMetaModelPackage;
+import org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -24,8 +24,7 @@ public class GenericTraceLinkMetaModelPackageImpl extends EPackageImpl implement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass genericTraceLinkEClass = null;
-
+	private EClass relatedToEClass = null;
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
@@ -95,8 +94,8 @@ public class GenericTraceLinkMetaModelPackageImpl extends EPackageImpl implement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getGenericTraceLink() {
-		return genericTraceLinkEClass;
+	public EClass getRelatedTo() {
+		return relatedToEClass;
 	}
 
 	/**
@@ -104,8 +103,8 @@ public class GenericTraceLinkMetaModelPackageImpl extends EPackageImpl implement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getGenericTraceLink_Sources() {
-		return (EReference)genericTraceLinkEClass.getEStructuralFeatures().get(0);
+	public EReference getRelatedTo_Sources() {
+		return (EReference)relatedToEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -113,8 +112,8 @@ public class GenericTraceLinkMetaModelPackageImpl extends EPackageImpl implement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getGenericTraceLink_Targets() {
-		return (EReference)genericTraceLinkEClass.getEStructuralFeatures().get(1);
+	public EReference getRelatedTo_Targets() {
+		return (EReference)relatedToEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -145,9 +144,9 @@ public class GenericTraceLinkMetaModelPackageImpl extends EPackageImpl implement
 		isCreated = true;
 
 		// Create classes and their features
-		genericTraceLinkEClass = createEClass(GENERIC_TRACE_LINK);
-		createEReference(genericTraceLinkEClass, GENERIC_TRACE_LINK__SOURCES);
-		createEReference(genericTraceLinkEClass, GENERIC_TRACE_LINK__TARGETS);
+		relatedToEClass = createEClass(RELATED_TO);
+		createEReference(relatedToEClass, RELATED_TO__SOURCES);
+		createEReference(relatedToEClass, RELATED_TO__TARGETS);
 	}
 
 	/**
@@ -183,9 +182,9 @@ public class GenericTraceLinkMetaModelPackageImpl extends EPackageImpl implement
 		// Add supertypes to classes
 
 		// Initialize classes, features, and operations; add parameters
-		initEClass(genericTraceLinkEClass, GenericTraceLink.class, "GenericTraceLink", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getGenericTraceLink_Sources(), theEcorePackage.getEObject(), null, "sources", null, 0, -1, GenericTraceLink.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getGenericTraceLink_Targets(), theEcorePackage.getEObject(), null, "targets", null, 0, -1, GenericTraceLink.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(relatedToEClass, RelatedTo.class, "RelatedTo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getRelatedTo_Sources(), theEcorePackage.getEObject(), null, "sources", null, 0, -1, RelatedTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getRelatedTo_Targets(), theEcorePackage.getEObject(), null, "targets", null, 0, -1, RelatedTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

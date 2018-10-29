@@ -4,31 +4,33 @@ package org.eclipse.capra.GenericTraceLinkMetaModel.impl;
 
 import java.util.Collection;
 
-import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLink;
 import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLinkMetaModelPackage;
+import org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo;
+
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Generic Trace Link</b></em>'.
+ * An implementation of the model object '<em><b>Related To</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkImpl#getSources <em>Sources</em>}</li>
- *   <li>{@link org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkImpl#getTargets <em>Targets</em>}</li>
+ *   <li>{@link org.eclipse.capra.GenericTraceLinkMetaModel.impl.RelatedToImpl#getSources <em>Sources</em>}</li>
+ *   <li>{@link org.eclipse.capra.GenericTraceLinkMetaModel.impl.RelatedToImpl#getTargets <em>Targets</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class GenericTraceLinkImpl extends MinimalEObjectImpl.Container implements GenericTraceLink {
+public class RelatedToImpl extends MinimalEObjectImpl.Container implements RelatedTo {
 	/**
 	 * The cached value of the '{@link #getSources() <em>Sources</em>}' reference list.
 	 * <!-- begin-user-doc -->
@@ -54,7 +56,7 @@ public class GenericTraceLinkImpl extends MinimalEObjectImpl.Container implement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected GenericTraceLinkImpl() {
+	protected RelatedToImpl() {
 		super();
 	}
 
@@ -65,7 +67,7 @@ public class GenericTraceLinkImpl extends MinimalEObjectImpl.Container implement
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return GenericTraceLinkMetaModelPackage.Literals.GENERIC_TRACE_LINK;
+		return GenericTraceLinkMetaModelPackage.Literals.RELATED_TO;
 	}
 
 	/**
@@ -75,7 +77,7 @@ public class GenericTraceLinkImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public EList<EObject> getSources() {
 		if (sources == null) {
-			sources = new EObjectResolvingEList<EObject>(EObject.class, this, GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK__SOURCES);
+			sources = new EObjectResolvingEList<EObject>(EObject.class, this, GenericTraceLinkMetaModelPackage.RELATED_TO__SOURCES);
 		}
 		return sources;
 	}
@@ -87,7 +89,7 @@ public class GenericTraceLinkImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public EList<EObject> getTargets() {
 		if (targets == null) {
-			targets = new EObjectResolvingEList<EObject>(EObject.class, this, GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK__TARGETS);
+			targets = new EObjectResolvingEList<EObject>(EObject.class, this, GenericTraceLinkMetaModelPackage.RELATED_TO__TARGETS);
 		}
 		return targets;
 	}
@@ -100,9 +102,9 @@ public class GenericTraceLinkImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK__SOURCES:
+			case GenericTraceLinkMetaModelPackage.RELATED_TO__SOURCES:
 				return getSources();
-			case GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK__TARGETS:
+			case GenericTraceLinkMetaModelPackage.RELATED_TO__TARGETS:
 				return getTargets();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -117,11 +119,11 @@ public class GenericTraceLinkImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK__SOURCES:
+			case GenericTraceLinkMetaModelPackage.RELATED_TO__SOURCES:
 				getSources().clear();
 				getSources().addAll((Collection<? extends EObject>)newValue);
 				return;
-			case GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK__TARGETS:
+			case GenericTraceLinkMetaModelPackage.RELATED_TO__TARGETS:
 				getTargets().clear();
 				getTargets().addAll((Collection<? extends EObject>)newValue);
 				return;
@@ -137,10 +139,10 @@ public class GenericTraceLinkImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK__SOURCES:
+			case GenericTraceLinkMetaModelPackage.RELATED_TO__SOURCES:
 				getSources().clear();
 				return;
-			case GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK__TARGETS:
+			case GenericTraceLinkMetaModelPackage.RELATED_TO__TARGETS:
 				getTargets().clear();
 				return;
 		}
@@ -155,12 +157,12 @@ public class GenericTraceLinkImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK__SOURCES:
+			case GenericTraceLinkMetaModelPackage.RELATED_TO__SOURCES:
 				return sources != null && !sources.isEmpty();
-			case GenericTraceLinkMetaModelPackage.GENERIC_TRACE_LINK__TARGETS:
+			case GenericTraceLinkMetaModelPackage.RELATED_TO__TARGETS:
 				return targets != null && !targets.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
-} //GenericTraceLinkImpl
+} //RelatedToImpl

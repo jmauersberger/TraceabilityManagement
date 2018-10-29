@@ -52,7 +52,7 @@
    <extension
          point="org.eclipse.capra.configuration.TraceLinkAdapter">
       <TraceLinkAdapter
-            class="org.eclipse.capra.generic.tracemodels.GenericTraceLinkAdapter">
+            class="org.eclipse.capra.generic.tracemodels.RelatedToLinkAdapter">
       </TraceLinkAdapter>
    </extension>
 

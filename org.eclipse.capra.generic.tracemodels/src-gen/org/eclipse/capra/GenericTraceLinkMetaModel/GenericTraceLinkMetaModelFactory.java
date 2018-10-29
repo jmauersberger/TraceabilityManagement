@@ -22,13 +22,13 @@ public interface GenericTraceLinkMetaModelFactory extends EFactory {
 	GenericTraceLinkMetaModelFactory eINSTANCE = org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkMetaModelFactoryImpl.init();
 
 	/**
-	 * Returns a new object of class '<em>Generic Trace Link</em>'.
+	 * Returns a new object of class '<em>Related To</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Generic Trace Link</em>'.
+	 * @return a new object of class '<em>Related To</em>'.
 	 * @generated
 	 */
-	GenericTraceLink createGenericTraceLink();
+	RelatedTo createRelatedTo();
 
 	/**
 	 * Returns the package supported by this factory.

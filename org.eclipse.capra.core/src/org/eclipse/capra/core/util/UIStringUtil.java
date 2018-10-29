@@ -16,6 +16,7 @@ import org.eclipse.capra.core.handlers.ArtifactHandler;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 
 /**
  * Contains methods to work with {@link EObject} instances encountered when
@@ -55,6 +56,10 @@ public class UIStringUtil {
 
 		if (!success)
 			success = tryGetNameAttribute(eObject, identifier);
+		
+		if (!success)
+			success = 	tryGetReference( eObject, identifier);
+
 
 		if (!success)
 			success = tryGetAnyAttribute(eObject, identifier);
@@ -109,7 +114,7 @@ public class UIStringUtil {
 	private static boolean tryGetNameAttribute(final EObject eObject, final StringBuilder name) {
 		boolean success = false;
 		for (EAttribute feature : eObject.eClass().getEAllAttributes()) {
-			if (feature.getName().equals("name")) {
+			if (feature.getName().equals("name") || feature.getName().equals("text")) {
 				Object obj = eObject.eGet(feature);
 				if (obj != null) {
 					name.append(obj.toString());
@@ -153,5 +158,29 @@ public class UIStringUtil {
 		}
 		return success;
 	}
+	
+	/**
+	 * @param name
+	 *            Use an empty StringBuilder as input. If this function returns
+	 *            true, this parameter has been filled, if it returns false, nothing
+	 *            happened.
+	 * @return Indicates the success of this function and if the last parameter
+	 *         contains output.
+	 */
+	private static boolean tryGetReference(final EObject eObject, final StringBuilder name) {
+		boolean success = false;
+		for (EReference feature : eObject.eClass().getEAllReferences()) {
+			if (feature.getName().equals("name") || feature.getName().equals("base_Class")) {
+				Object obj = eObject.eGet(feature);
+				if (obj != null) {
+					success = tryGetNameAttribute((EObject)obj, name);
+					
+					break;
+				}
+			}
+		}
+		return success;
+	}
+
 
 }

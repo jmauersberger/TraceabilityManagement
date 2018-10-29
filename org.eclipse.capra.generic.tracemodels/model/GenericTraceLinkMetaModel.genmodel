@@ -8,9 +8,9 @@
   <foreignModel>GenericTraceLinkMetaModel.ecore</foreignModel>
   <genPackages prefix="GenericTraceLinkMetaModel" basePackage="org.eclipse.capra"
       disposableProviderFactory="true" ecorePackage="GenericTraceLinkMetaModel.ecore#/">
-    <genClasses ecoreClass="GenericTraceLinkMetaModel.ecore#//GenericTraceLink">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GenericTraceLinkMetaModel.ecore#//GenericTraceLink/sources"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GenericTraceLinkMetaModel.ecore#//GenericTraceLink/targets"/>
+    <genClasses ecoreClass="GenericTraceLinkMetaModel.ecore#//RelatedTo">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GenericTraceLinkMetaModel.ecore#//RelatedTo/sources"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GenericTraceLinkMetaModel.ecore#//RelatedTo/targets"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>
