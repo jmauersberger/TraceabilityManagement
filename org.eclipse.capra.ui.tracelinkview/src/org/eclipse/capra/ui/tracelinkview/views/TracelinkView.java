@@ -206,7 +206,7 @@ public class TracelinkView extends ViewPart {
 					TraceLinkAdapter traceLinkAdapter = ExtensionPointUtil.getTraceLinkAdapter(traceType);
 //					System.out.println("*traceLinkAdapter: " + traceLinkAdapter.getLinkType());
 					List<TraceLinkAttribute> attributes = traceLinkAdapter.getAttributes();
-					if(attributes.size() > 0){
+					if(attributes != null && attributes.size() > 0){
 //						System.out.println("*with " + attributes.size() + " attributes");
 //						for(TraceLinkAttribute attr : attributes){
 //							System.out.println("*Name: " + attr.getName() + " type: " + attr.getType() + " value: " + attr.getValue());
