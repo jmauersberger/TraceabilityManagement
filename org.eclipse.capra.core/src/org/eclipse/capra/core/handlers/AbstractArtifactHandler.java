@@ -32,12 +32,20 @@ public abstract class AbstractArtifactHandler implements ArtifactHandler {
 
 	@Override
 	public String getObjectTypeName(Object obj) throws CapraException {
-		Class<?>[] interfaces = obj.getClass().getInterfaces();
-		if (interfaces.length > 0) {
-			Class<?> interface1 = interfaces[0];
-			return interface1.getSimpleName();
+		
+		try{
+			if (obj == null || obj.getClass() == null)
+				return "";
+			Class<?>[] interfaces = obj.getClass().getInterfaces();
+			if (interfaces.length > 0) {
+				Class<?> interface1 = interfaces[0];
+				return interface1.getSimpleName();
+			}
+	
+			return obj.getClass().getSimpleName();
+		}catch (Exception ex){
+			ex.printStackTrace();
+			return "";
 		}
-
-		return obj.getClass().getSimpleName();
 	}
 }
