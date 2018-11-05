@@ -76,8 +76,16 @@ public class PapyrusHandler extends AbstractArtifactHandler {
 			EObject eObject = ((EObjectTreeElementImpl) selection).getEObject();
 			return UIStringUtil.createUIString(eObject);
 		}else{
-			return null;
+			if (selection instanceof EditPart) {
+				EObject eobj = EMFHelper.getEObject(selection);
+				if (eobj instanceof NamedElement){
+					if (ContractEntityUtil.getInstance().isContract((Element) eobj)){
+						 return  ((NamedElement) eobj).getName();
+					}
+				}
+			}
 		}
+		return null;
 	}
 
 	@Override
