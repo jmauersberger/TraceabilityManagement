@@ -95,4 +95,7 @@ public interface ArtifactHandler {
 	 * @throws CapraException Something went wrong
 	 */
 	String getObjectTypeName(Object obj) throws CapraException;
+	
+	void openEditor(Object obj);
+	
 }

@@ -9,8 +9,15 @@ Require-Bundle: org.eclipse.capra.core,
  org.eclipse.papyrus.sysml;bundle-version="1.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.capra.handler.papyrus
-Import-Package: org.eclipse.gef,
+Import-Package: org.eclipse.capra.handler.emf,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime;version="3.5.0",
+ org.eclipse.gef,
+ org.eclipse.jface.viewers,
+ org.eclipse.papyrus.infra.core.services,
  org.eclipse.papyrus.infra.core.utils,
  org.eclipse.papyrus.infra.emf.utils,
+ org.eclipse.papyrus.infra.services.labelprovider.service,
+ org.eclipse.ui.ide,
  org.eclipse.uml2.uml,
  org.polarsys.chess.contracts.profile.chesscontract.util

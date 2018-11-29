@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.capra.handler.file;
 
+import java.io.File;
 import java.util.List;
 
 import org.eclipse.capra.GenericArtifactMetaModel.ArtifactWrapper;
 import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.handlers.AbstractArtifactHandler;
 import org.eclipse.capra.core.util.ExtensionPointUtil;
+import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -34,17 +36,27 @@ public class IResourceHandler extends AbstractArtifactHandler {
 
 	@Override
 	public boolean canHandleSelection(Object obj) {
-		return obj instanceof IResource;
+		return obj instanceof IResource || obj instanceof ArtifactWrapper;
 	}
 
 	@Override
 	public String getName(Object obj) {
+		
+		if (obj instanceof ArtifactWrapper)
+			return ((ArtifactWrapper)obj).getName();
+		
 		IResource selectionAsIResource = (IResource) obj;
 		return selectionAsIResource.getName();
 	}
 
 	@Override
 	public String getURI(Object obj) {
+		
+		if (obj instanceof ArtifactWrapper){
+			ArtifactWrapper aw = (ArtifactWrapper) obj;
+			return aw.getUri();
+		}
+		
 		IResource selectionAsIResource = (IResource) obj;
 		return selectionAsIResource.getFullPath().toString();
 	}
@@ -53,6 +65,17 @@ public class IResourceHandler extends AbstractArtifactHandler {
 	public Image getIcon(Object obj) throws CapraException {
 		List<Object> extensions = ExtensionPointUtil.getExtensions("org.eclipse.ui.navigator.navigatorContent",
 				"labelProvider");
+		
+		if (obj instanceof ArtifactWrapper){
+			
+			try{
+				String uri = ((ArtifactWrapper) obj).getUri();
+				File f = new File(uri);
+				obj = f;
+			}catch (Exception ex){
+				ex.printStackTrace();
+			}
+		}
 
 		for (Object ext : extensions) {
 			if (ext instanceof ILabelProvider) {

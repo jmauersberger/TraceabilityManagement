@@ -48,4 +48,9 @@ public abstract class AbstractArtifactHandler implements ArtifactHandler {
 			return "";
 		}
 	}
+	
+	@Override
+	public void openEditor(Object obj){
+		return;
+	}
 }

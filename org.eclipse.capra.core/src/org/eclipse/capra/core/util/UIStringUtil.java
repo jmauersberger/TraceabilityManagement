@@ -45,6 +45,8 @@ public class UIStringUtil {
 	public static String createUIString(final EObject eObject) throws CapraException {
 		if (eObject == null)
 			return "<null>";
+		
+		
 		if (eObject.eClass() == null)
 			return eObject.toString();
 
