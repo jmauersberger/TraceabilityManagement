@@ -44,8 +44,6 @@ public class CreateConnection extends AbstractCapraOperation {
 		List<EObject> wrappedSources = ArtifactWrappingUtil.wrap(sources, artifactHandlers, artifactModel);
 		List<EObject> wrappedTargets = ArtifactWrappingUtil.wrap(targets, artifactHandlers, artifactModel);
 		
-		//prova
-		//CDOURIUtil.setURIMode(URIMode.CONNECTION_AWARE);
 		Map<String, Object> map = 
 				Resource.Factory.Registry.INSTANCE.getProtocolToFactoryMap();
 				if (!map.containsKey(CDONet4jUtil.PROTOCOL_TCP))
@@ -55,7 +53,7 @@ public class CreateConnection extends AbstractCapraOperation {
 		
 		EObject obj = wrappedTargets.get(0);
 		Resource res = obj.eResource();
-		CDOResource cdores = (CDOResource) res;
+		//CDOResource cdores = (CDOResource) res;
 //		URI uri = res.getURI();
 
 		EObject link = null;

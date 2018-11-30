@@ -186,4 +186,19 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 
 		return uri;
 	}
+
+	@Override
+	public List<EObject> getTraces(EObject traceModel) throws CapraException {
+		List<EObject> resultTraces = new ArrayList<>();
+		if (traceModel instanceof GenericTraceModel) {
+			GenericTraceModel m = (GenericTraceModel) traceModel;
+		
+			for (EObject trace : m.getTraces()) {
+				resultTraces.add(trace);
+			}
+
+		}
+
+		return resultTraces;
+	}
 }

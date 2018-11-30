@@ -121,4 +121,24 @@ public interface TraceMetaModelAdapter {
 	 * @throws CapraException Something went wrong
 	 */
 	List<EObject> getTracesToTarget(EObject target, EObject traceModel) throws CapraException;
+	
+	/**
+	 * Get all traces related to the given adapter
+	 * 
+	 * @param adapter: the TraceLinkAdapter
+	 * @param traceModel: the tracemodel containing the traces
+	 * @return list of traces
+	 * @throws CapraException
+	 *
+	List<EObject> getTraces(TraceLinkAdapter adapter, EObject traceModel) throws CapraException;*/
+	
+	/**
+	 * Get all the traces
+	 * 
+	 * @param traceModel
+	 * @return list of traces
+	 * @throws CapraException
+	 */
+	List<EObject> getTraces(EObject traceModel) throws CapraException;
+	
 }
