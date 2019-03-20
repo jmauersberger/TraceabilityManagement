@@ -22,6 +22,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -200,8 +201,9 @@ public class TracelinkView extends ViewPart {
 				String traceType = linkTypeCombo.getText();
 				List<Object> sources = leftViewer.getObjects();
 				List<Object> targets = rightViewer.getObjects();
-
+			
 				try {
+					Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 					//attributes
 					TraceLinkAdapter traceLinkAdapter = ExtensionPointUtil.getTraceLinkAdapter(traceType);
 //					System.out.println("*traceLinkAdapter: " + traceLinkAdapter.getLinkType());
@@ -212,7 +214,7 @@ public class TracelinkView extends ViewPart {
 //							System.out.println("*Name: " + attr.getName() + " type: " + attr.getType() + " value: " + attr.getValue());
 //						}
 						//pass attributes to a Dialog Window with a table/form to view and edit
-						Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+						
 						TraceLinkAttributesDialog dialog = new TraceLinkAttributesDialog(shell, attributes);
 						if (dialog.open() == Window.OK) {
 							attributes = dialog.getAttributes();
@@ -221,9 +223,11 @@ public class TracelinkView extends ViewPart {
 //							}
 						}
 					}
-					
 					CreateConnection createConnection = new CreateConnection(sources, targets, traceType, attributes);
 					createConnection.execute();
+					MessageDialog.openInformation(shell, "Trace", "Trace has been created.");
+
+					
 				} catch (CapraException ex) {
 					CapraExceptionUtil.handleException(ex, "Create Connection Failed");
 				}
