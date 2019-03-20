@@ -174,7 +174,7 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 		return null;
 	}
 
-	private String getUri(EObject eobj) throws CapraException {
+	public static String getUri(EObject eobj) throws CapraException {
 		String uri = null;
 		if (eobj instanceof ArtifactWrapper) {
 			uri = ((ArtifactWrapper) eobj).getUri();
