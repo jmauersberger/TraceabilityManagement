@@ -25,13 +25,18 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
+import org.eclipse.emf.ecore.resource.impl.URIConverterImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.EditPart;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.impl.EObjectTreeElementImpl;
 import org.eclipse.papyrus.infra.core.services.ServiceException;
 import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
+import org.eclipse.papyrus.infra.emf.utils.ResourceUtils;
 import org.eclipse.papyrus.infra.emf.utils.ServiceUtilsForEObject;
 import org.eclipse.papyrus.infra.services.labelprovider.service.LabelProviderService;
 import org.eclipse.swt.graphics.Image;
@@ -66,6 +71,21 @@ public class PapyrusHandler extends EMFHandler {
 			}
 			
 		}
+		
+		if (selection instanceof EObject){
+			
+			try{
+				String uri = ((EObject) selection).eResource().getURI().toPlatformString(false).replaceAll(".uml", ".di");
+				URI diURI = URI.createFileURI(uri);
+				if (URIConverterImpl.INSTANCE.exists(diURI, null)){
+					return true;
+				}
+			}
+			catch(Exception ex){
+				
+			}
+		}
+		
 		
 		if(selection instanceof EObjectTreeElementImpl || selection instanceof NamedElement){
 			test = true;
