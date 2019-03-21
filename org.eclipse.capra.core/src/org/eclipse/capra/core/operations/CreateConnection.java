@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.eclipse.capra.core.CapraException;
 import org.eclipse.capra.core.adapters.TraceLinkAdapter;
+import org.eclipse.capra.core.adapters.TraceMetaModelAdapter;
 import org.eclipse.capra.core.util.ArtifactWrappingUtil;
+import org.eclipse.capra.core.util.ExtensionPointUtil;
 import org.eclipse.capra.core.util.TraceLinkAttribute;
 import org.eclipse.emf.cdo.eresource.CDOResource;
 import org.eclipse.emf.cdo.eresource.CDOResourceFactory;
@@ -20,7 +22,10 @@ public class CreateConnection extends AbstractCapraOperation {
 	private List<Object> sources;
 	private List<Object> targets;
 	private String traceType;
-	private List<TraceLinkAttribute> attributes; 
+	private List<TraceLinkAttribute> attributes;
+	private EObject traced; 
+	private EObject traceModel;
+	private EObject artifactModel;
 
 	public CreateConnection(List<Object> sources, List<Object> targets, String traceType) throws CapraException {
 		this.sources = sources;
@@ -38,8 +43,8 @@ public class CreateConnection extends AbstractCapraOperation {
 
 	@Override
 	public void execute() throws CapraException {
-		EObject traceModel = persistenceAdapter.getTraceModel(resourceSet);
-		EObject artifactModel = persistenceAdapter.getArtifactWrapperModel(resourceSet);
+		traceModel = persistenceAdapter.getTraceModel(resourceSet);
+		artifactModel = persistenceAdapter.getArtifactWrapperModel(resourceSet);
 
 		List<EObject> wrappedSources = ArtifactWrappingUtil.wrap(sources, artifactHandlers, artifactModel);
 		List<EObject> wrappedTargets = ArtifactWrappingUtil.wrap(targets, artifactHandlers, artifactModel);
@@ -69,9 +74,22 @@ public class CreateConnection extends AbstractCapraOperation {
 		if (link != null) {
 			traceMetaModelAdapter.addTrace(link, traceModel);
 			persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
+			traced = link;
 		} else {
 			throw new CapraException("Could not create the trace.");
 		}
+	}
+	
+	public void undo() throws CapraException {
+		
+		traceMetaModelAdapter.deleteTrace(traced, traceModel);
+		persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
+	}
+	
+	public void redo() throws CapraException {
+		
+		traceMetaModelAdapter.addTrace(traced, traceModel);
+		persistenceAdapter.saveTracesAndArtifacts(traceModel, artifactModel);
 	}
 
 }
