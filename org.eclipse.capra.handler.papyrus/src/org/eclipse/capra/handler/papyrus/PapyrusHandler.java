@@ -109,10 +109,27 @@ public class PapyrusHandler extends EMFHandler {
 		}
 		
 		if(selection instanceof EObjectTreeElementImpl){
-			return ((EObjectTreeElementImpl) selection).getEObject();
+			EObject sel = ((EObjectTreeElementImpl) selection).getEObject();
+			if (sel instanceof Element){
+				if (ContractEntityUtil.getInstance().isContract((Element) sel)){
+					 return  (EObject) ContractEntityUtil.getInstance().getContract((Class) sel);
+				}
+			}
+			return sel;
 		}else{
-			return null;
+			
+			if (selection instanceof EObject) {
+				return EObject.class.cast(selection);
+			} else if (selection instanceof IAdaptable) {
+				IAdaptable a = (IAdaptable) selection;
+				if (a.getAdapter(EObject.class) != null) {
+					return a.getAdapter(EObject.class);
+				}
+			} 
+			
+			
 		}
+		return null;
 	}
 
 	@Override
