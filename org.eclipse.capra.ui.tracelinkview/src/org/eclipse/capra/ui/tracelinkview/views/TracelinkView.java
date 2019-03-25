@@ -14,6 +14,11 @@ import org.eclipse.capra.core.util.TraceLinkAttribute;
 import org.eclipse.capra.ui.tracelinkview.Activator;
 import org.eclipse.capra.ui.tracelinkview.dialogs.TraceLinkAttributesDialog;
 import org.eclipse.capra.ui.tracelinkview.views.CapraTableViewer.IChangeListener;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IUndoContext;
+import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.action.Action;
@@ -37,6 +42,9 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.operations.RedoActionHandler;
+import org.eclipse.ui.operations.UndoActionHandler;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -54,6 +62,7 @@ import org.eclipse.ui.part.ViewPart;
  * <p>
  * 
  * @author Sascha Baumgart
+ * @author modified by INTECS
  */
 public class TracelinkView extends ViewPart {
 
@@ -67,6 +76,16 @@ public class TracelinkView extends ViewPart {
 	private Action createLinkAction;
 	private Action clearViewersAction;
 
+	// get the operation history
+	private IOperationHistory history = OperationHistoryFactory.getOperationHistory();
+	
+	// obtain the appropriate undo context
+	private IUndoContext undoContext = IOperationHistory.GLOBAL_UNDO_CONTEXT;
+	
+	private UndoActionHandler undoAction;
+
+	private RedoActionHandler redoAction;
+	
 	/**
 	 * This is a callback that will allow us to create the viewer and initialize
 	 * it.
@@ -117,6 +136,8 @@ public class TracelinkView extends ViewPart {
 		makeActions();
 		hookContextMenu();
 		contributeToActionBars();
+		
+		createGlobalActionHandlers();
 	}
 
 	private void refreshAvailableLinkTypes() throws CapraException {
@@ -223,8 +244,23 @@ public class TracelinkView extends ViewPart {
 //							}
 						}
 					}
+					
 					CreateConnection createConnection = new CreateConnection(sources, targets, traceType, attributes);
-					createConnection.execute();
+					if (undoContext != null) {
+						// create an operation and assign it the context
+						IUndoableOperation operation = new CreateTraceOperation(createConnection);
+						operation.addContext(undoContext);
+						try {
+							history.execute(operation, null, null);
+						} catch (ExecutionException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+					//moved to CreateTraceOperation class
+//					createConnection.execute();
+					
 					MessageDialog.openInformation(shell, "Trace", "Trace has been created.");
 
 					
@@ -312,5 +348,16 @@ public class TracelinkView extends ViewPart {
 		} catch (CapraException e) {
 			CapraExceptionUtil.handleException(e, "Error while Dropping");
 		}
+	}
+	
+	private void createGlobalActionHandlers() {
+		// set up action handlers that operate on the current context
+		undoAction = new UndoActionHandler(this.getSite(), undoContext);
+		redoAction = new RedoActionHandler(this.getSite(), undoContext);
+		IActionBars actionBars = getViewSite().getActionBars();
+		actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
+				undoAction);
+		actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
+				redoAction);
 	}
 }
