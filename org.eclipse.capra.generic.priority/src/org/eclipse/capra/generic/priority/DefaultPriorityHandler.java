@@ -20,6 +20,7 @@ import org.eclipse.capra.handler.emf.EMFHandler;
 import org.eclipse.capra.handler.file.IResourceHandler;
 import org.eclipse.capra.handler.gef.GEFHandler;
 import org.eclipse.capra.handler.papyrus.PapyrusHandler;
+import org.eclipse.capra.handler.reqif.ReqIFHandler;
 import org.eclipse.emf.cdo.CDOObject;
 import org.eclipse.emf.cdo.eresource.CDOResource;
 import org.eclipse.emf.common.util.URI;
@@ -28,6 +29,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.gef.EditPart;
 import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.impl.EObjectTreeElementImpl;
 import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
+import org.eclipse.rmf.reqif10.SpecHierarchy;
+import org.eclipse.rmf.reqif10.SpecObject;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.uml2.uml.NamedElement;
 import org.eclipse.uml2.uml.resource.UMLResource;
@@ -81,6 +84,8 @@ public class DefaultPriorityHandler implements PriorityHandler {
 					return handlers.stream().filter(h -> h instanceof PapyrusHandler).findAny().get();
 				else if (eobj.eResource() instanceof CDOResource || eobj instanceof CDOObject){
 					return handlers.stream().filter(h -> h instanceof CdoHandler).findAny().get();
+				}else if(eobj instanceof SpecHierarchy || eobj instanceof SpecObject){
+					return handlers.stream().filter(h -> h instanceof ReqIFHandler).findAny().get();
 				}
 			}
 			

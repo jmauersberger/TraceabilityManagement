@@ -39,6 +39,9 @@ import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
 import org.eclipse.papyrus.infra.emf.utils.ResourceUtils;
 import org.eclipse.papyrus.infra.emf.utils.ServiceUtilsForEObject;
 import org.eclipse.papyrus.infra.services.labelprovider.service.LabelProviderService;
+import org.eclipse.papyrus.infra.services.openelement.service.OpenElementService;
+import org.eclipse.papyrus.views.search.scope.ScopeEntry;
+import org.eclipse.papyrus.views.search.utils.DefaultServiceRegistryTracker;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
@@ -252,9 +255,14 @@ public class PapyrusHandler extends EMFHandler {
 		  file.exists();
 		  
 		  IDE.openEditor(page, file);
+		  
+		  ScopeEntry scopeEntry = new ScopeEntry(EcoreUtil.getURI(eobj), new DefaultServiceRegistryTracker());
+		  OpenElementService service = scopeEntry.getServicesRegistry().getService(OpenElementService.class);
+		  service.openSemanticElement(eobj);
 	
 		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ServiceException e) {
 			e.printStackTrace();
 		} 
 	}

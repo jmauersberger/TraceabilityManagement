@@ -8,4 +8,13 @@
             class="org.eclipse.capra.handler.reqif.ReqIFHandler">
       </artifactHandler>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.polarsys.chess.preferences"
+            class="org.eclipse.capra.handler.reqif.preferences.ReqIFPreferencePage"
+            id="org.polarsys.chess.mobius.page"
+            name="ReqIF Display Preferences">
+      </page>
+   </extension>
 </plugin>
