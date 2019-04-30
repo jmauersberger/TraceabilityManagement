@@ -137,10 +137,12 @@ public class GenericTraceMetaModelAdapter implements TraceMetaModelAdapter {
 							String storedTargetUri = getUri(storedTarget);
 							if (targetUri.equals(storedTargetUri)) {
 								resultTraces.add(trace);
-							}else if (EcoreUtil.equals(target, storedTarget)) {
-								resultTraces.add(trace);
-								
 							}
+							//objects which are equal but stored in different resources should not be collected... the following lines of code are disabled
+//							else if (EcoreUtil.equals(target, storedTarget)) {
+//								resultTraces.add(trace);
+//								
+//							}
 						}
 					}
 				}
