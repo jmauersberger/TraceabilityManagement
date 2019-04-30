@@ -31,6 +31,15 @@ public interface GenericTraceLinkMetaModelFactory extends EFactory {
 	RelatedTo createRelatedTo();
 
 	/**
+	 * Returns a new object of class '<em>Satisfy</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Satisfy</em>'.
+	 * @generated
+	 */
+	Satisfy createSatisfy();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

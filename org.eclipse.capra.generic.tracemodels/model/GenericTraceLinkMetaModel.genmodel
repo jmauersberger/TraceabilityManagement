@@ -12,5 +12,9 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GenericTraceLinkMetaModel.ecore#//RelatedTo/sources"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GenericTraceLinkMetaModel.ecore#//RelatedTo/targets"/>
     </genClasses>
+    <genClasses ecoreClass="GenericTraceLinkMetaModel.ecore#//Satisfy">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GenericTraceLinkMetaModel.ecore#//Satisfy/element"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference GenericTraceLinkMetaModel.ecore#//Satisfy/requirement"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -5,6 +5,7 @@ package org.eclipse.capra.GenericTraceLinkMetaModel.impl;
 import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLinkMetaModelFactory;
 import org.eclipse.capra.GenericTraceLinkMetaModel.GenericTraceLinkMetaModelPackage;
 import org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo;
+import org.eclipse.capra.GenericTraceLinkMetaModel.Satisfy;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -25,6 +26,12 @@ public class GenericTraceLinkMetaModelPackageImpl extends EPackageImpl implement
 	 * @generated
 	 */
 	private EClass relatedToEClass = null;
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass satisfyEClass = null;
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
@@ -121,6 +128,33 @@ public class GenericTraceLinkMetaModelPackageImpl extends EPackageImpl implement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getSatisfy() {
+		return satisfyEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSatisfy_Element() {
+		return (EReference)satisfyEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSatisfy_Requirement() {
+		return (EReference)satisfyEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public GenericTraceLinkMetaModelFactory getGenericTraceLinkMetaModelFactory() {
 		return (GenericTraceLinkMetaModelFactory)getEFactoryInstance();
 	}
@@ -147,6 +181,10 @@ public class GenericTraceLinkMetaModelPackageImpl extends EPackageImpl implement
 		relatedToEClass = createEClass(RELATED_TO);
 		createEReference(relatedToEClass, RELATED_TO__SOURCES);
 		createEReference(relatedToEClass, RELATED_TO__TARGETS);
+
+		satisfyEClass = createEClass(SATISFY);
+		createEReference(satisfyEClass, SATISFY__ELEMENT);
+		createEReference(satisfyEClass, SATISFY__REQUIREMENT);
 	}
 
 	/**
@@ -185,6 +223,10 @@ public class GenericTraceLinkMetaModelPackageImpl extends EPackageImpl implement
 		initEClass(relatedToEClass, RelatedTo.class, "RelatedTo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getRelatedTo_Sources(), theEcorePackage.getEObject(), null, "sources", null, 0, -1, RelatedTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getRelatedTo_Targets(), theEcorePackage.getEObject(), null, "targets", null, 0, -1, RelatedTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(satisfyEClass, Satisfy.class, "Satisfy", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getSatisfy_Element(), theEcorePackage.getEObject(), null, "element", null, 0, 1, Satisfy.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSatisfy_Requirement(), theEcorePackage.getEObject(), null, "requirement", null, 0, 1, Satisfy.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

@@ -104,6 +104,53 @@ public interface GenericTraceLinkMetaModelPackage extends EPackage {
 
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.capra.GenericTraceLinkMetaModel.impl.SatisfyImpl <em>Satisfy</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.SatisfyImpl
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkMetaModelPackageImpl#getSatisfy()
+	 * @generated
+	 */
+	int SATISFY = 1;
+
+	/**
+	 * The feature id for the '<em><b>Element</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SATISFY__ELEMENT = 0;
+
+	/**
+	 * The feature id for the '<em><b>Requirement</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SATISFY__REQUIREMENT = 1;
+
+	/**
+	 * The number of structural features of the '<em>Satisfy</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SATISFY_FEATURE_COUNT = 2;
+
+	/**
+	 * The number of operations of the '<em>Satisfy</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SATISFY_OPERATION_COUNT = 0;
+
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.capra.GenericTraceLinkMetaModel.RelatedTo <em>Related To</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -134,6 +181,38 @@ public interface GenericTraceLinkMetaModelPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getRelatedTo_Targets();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.capra.GenericTraceLinkMetaModel.Satisfy <em>Satisfy</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Satisfy</em>'.
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.Satisfy
+	 * @generated
+	 */
+	EClass getSatisfy();
+
+	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.capra.GenericTraceLinkMetaModel.Satisfy#getElement <em>Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Element</em>'.
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.Satisfy#getElement()
+	 * @see #getSatisfy()
+	 * @generated
+	 */
+	EReference getSatisfy_Element();
+
+	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.capra.GenericTraceLinkMetaModel.Satisfy#getRequirement <em>Requirement</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Requirement</em>'.
+	 * @see org.eclipse.capra.GenericTraceLinkMetaModel.Satisfy#getRequirement()
+	 * @see #getSatisfy()
+	 * @generated
+	 */
+	EReference getSatisfy_Requirement();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -183,6 +262,32 @@ public interface GenericTraceLinkMetaModelPackage extends EPackage {
 		 * @generated
 		 */
 		EReference RELATED_TO__TARGETS = eINSTANCE.getRelatedTo_Targets();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.capra.GenericTraceLinkMetaModel.impl.SatisfyImpl <em>Satisfy</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.SatisfyImpl
+		 * @see org.eclipse.capra.GenericTraceLinkMetaModel.impl.GenericTraceLinkMetaModelPackageImpl#getSatisfy()
+		 * @generated
+		 */
+		EClass SATISFY = eINSTANCE.getSatisfy();
+
+		/**
+		 * The meta object literal for the '<em><b>Element</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference SATISFY__ELEMENT = eINSTANCE.getSatisfy_Element();
+
+		/**
+		 * The meta object literal for the '<em><b>Requirement</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference SATISFY__REQUIREMENT = eINSTANCE.getSatisfy_Requirement();
 
 	}
 

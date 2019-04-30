@@ -57,6 +57,7 @@ public class GenericTraceLinkMetaModelFactoryImpl extends EFactoryImpl implement
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case GenericTraceLinkMetaModelPackage.RELATED_TO: return createRelatedTo();
+			case GenericTraceLinkMetaModelPackage.SATISFY: return createSatisfy();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -70,6 +71,16 @@ public class GenericTraceLinkMetaModelFactoryImpl extends EFactoryImpl implement
 	public RelatedTo createRelatedTo() {
 		RelatedToImpl relatedTo = new RelatedToImpl();
 		return relatedTo;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Satisfy createSatisfy() {
+		SatisfyImpl satisfy = new SatisfyImpl();
+		return satisfy;
 	}
 
 	/**
