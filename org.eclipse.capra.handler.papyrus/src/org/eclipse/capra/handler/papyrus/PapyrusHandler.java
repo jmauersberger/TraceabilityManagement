@@ -27,6 +27,7 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.emf.ecore.resource.impl.URIConverterImpl;
@@ -255,6 +256,19 @@ public class PapyrusHandler extends EMFHandler {
 		  file.exists();
 		  
 		  IDE.openEditor(page, file);
+		  
+		  //check if the passed entity is a Stereotype; in this case we have to use its base entity to change the selection
+		  try{
+			  for (EStructuralFeature struct : eobj.eClass().getEAllStructuralFeatures()){
+				  if (struct.getName().startsWith("base_")){
+				  		//it is quite safe here to assume that eobj is a stereotype
+					  Object baseClass = eobj.eGet(struct);
+					  eobj = (EObject) baseClass;
+				  }
+			  }
+		  }catch(Exception ex){
+			  ex.printStackTrace();
+		  }
 		  
 		  ScopeEntry scopeEntry = new ScopeEntry(EcoreUtil.getURI(eobj), new DefaultServiceRegistryTracker());
 		  OpenElementService service = scopeEntry.getServicesRegistry().getService(OpenElementService.class);
