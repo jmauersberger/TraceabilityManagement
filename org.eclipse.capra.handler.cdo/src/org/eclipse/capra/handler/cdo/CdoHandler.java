@@ -159,7 +159,7 @@ public class CdoHandler extends EMFHandler {
 				String server = PreferenceConstants.getServerName();
 				String repoName = PreferenceConstants.getRepositoryName();
 				CDOConnectionUtil.instance.init(repoName,PreferenceConstants.getProtocol(),	server);
-				CDOSession session = CDOConnectionUtil.instance.openSession();
+				CDOSession session = CDOConnectionUtil.instance.getCurrentSession();
 				CDOView view = CDOConnectionUtil.instance.openView(session);
 				
 				URI selURI = EcoreUtil.getURI(cdoobj);
@@ -197,8 +197,6 @@ public class CdoHandler extends EMFHandler {
 				
 				}
 				
-				view.close();
-				session.close();
 				return;
 			}
 			
